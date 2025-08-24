@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WASM Multiplayer Arena</title>
+  <meta name="description" content="A lightweight, responsive multiplayer browser game built with WebAssembly and WebRTC">
+  
+  <!-- Preconnect to external resources -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  
+  <!-- Open Graph Meta Tags -->
+  <meta property="og:title" content="WASM Multiplayer Arena">
+  <meta property="og:description" content="Play a fast-paced multiplayer game in your browser">
+  <meta property="og:type" content="website">
+  
+  <!-- Performance optimizations -->
+  <meta name="theme-color" content="#6366f1">
+  <link rel="modulepreload" href="/src/main.ts">
+</head>
+<body>
+  <div id="app"></div>
+  <script type="module" src="/src/main.ts"></script>
+  
+  <!-- Fallback for browsers without module support -->
+  <noscript>
+    <div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: white; font-family: sans-serif;">
+      <h1>JavaScript Required</h1>
+      <p>Please enable JavaScript to play this game.</p>
+    </div>
+  </noscript>
+</body>
+</html>
