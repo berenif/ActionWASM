@@ -1,40 +1,177 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WASM Multiplayer Arena</title>
-  <meta name="description" content="A lightweight, responsive multiplayer browser game built with WebAssembly and WebRTC">
-  
-  <!-- Preconnect to external resources -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-  
-  <!-- Favicon -->
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-  
-  <!-- Open Graph Meta Tags -->
-  <meta property="og:title" content="WASM Multiplayer Arena">
-  <meta property="og:description" content="Play a fast-paced multiplayer game in your browser">
-  <meta property="og:type" content="website">
-  
-  <!-- Performance optimizations -->
-  <meta name="theme-color" content="#6366f1">
-  <link rel="modulepreload" href="/src/main.ts">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roguelike ARPG - Enter the Dungeon</title>
+    <link rel="stylesheet" href="/src/style.css">
+    <link rel="stylesheet" href="/src/landing.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div id="app"></div>
-  <script type="module" src="/src/main.ts"></script>
-  
-  <!-- Fallback for browsers without module support -->
-  <noscript>
-    <div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: white; font-family: sans-serif;">
-      <h1>JavaScript Required</h1>
-      <p>Please enable JavaScript to play this game.</p>
+    <!-- Landing Page -->
+    <div id="landing-page" class="landing-container">
+        <div class="hero-section">
+            <div class="game-logo">
+                <h1 class="game-title">DUNGEON<span class="accent">RUSH</span></h1>
+                <p class="game-subtitle">A Roguelike Action RPG</p>
+            </div>
+            
+            <div class="hero-content">
+                <div class="game-preview">
+                    <div class="preview-screen">
+                        <div class="preview-animation"></div>
+                    </div>
+                </div>
+                
+                <div class="game-info">
+                    <h2>Enter the Endless Dungeon</h2>
+                    <p class="game-description">
+                        Fight through procedurally generated rooms, collect powerful boons, 
+                        and face increasingly challenging enemies in this fast-paced roguelike ARPG.
+                    </p>
+                    
+                    <div class="feature-list">
+                        <div class="feature">
+                            <span class="feature-icon">⚔️</span>
+                            <span>Fast Combat</span>
+                        </div>
+                        <div class="feature">
+                            <span class="feature-icon">🎲</span>
+                            <span>Roguelike Elements</span>
+                        </div>
+                        <div class="feature">
+                            <span class="feature-icon">💎</span>
+                            <span>100+ Boons</span>
+                        </div>
+                        <div class="feature">
+                            <span class="feature-icon">🏆</span>
+                            <span>Meta Progression</span>
+                        </div>
+                    </div>
+                    
+                    <div class="play-section">
+                        <button id="play-button" class="play-button">
+                            <span class="button-text">PLAY NOW</span>
+                            <span class="button-subtext">Press ENTER to start</span>
+                        </button>
+                        
+                        <div class="play-options">
+                            <button id="practice-mode" class="option-button">Practice Mode</button>
+                            <button id="multiplayer-mode" class="option-button">Multiplayer</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="info-sections">
+            <div class="info-panel controls-panel">
+                <h3>Controls</h3>
+                <div class="controls-grid">
+                    <div class="control-item">
+                        <kbd>WASD</kbd>
+                        <span>Move</span>
+                    </div>
+                    <div class="control-item">
+                        <kbd>Space</kbd>
+                        <span>Dash</span>
+                    </div>
+                    <div class="control-item">
+                        <kbd>J</kbd>
+                        <span>Light Attack</span>
+                    </div>
+                    <div class="control-item">
+                        <kbd>K</kbd>
+                        <span>Heavy Attack</span>
+                    </div>
+                    <div class="control-item">
+                        <kbd>E</kbd>
+                        <span>Interact</span>
+                    </div>
+                    <div class="control-item">
+                        <kbd>ESC</kbd>
+                        <span>Pause</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="info-panel gameplay-panel">
+                <h3>Core Loop</h3>
+                <div class="loop-flow">
+                    <div class="loop-item">🗺️ Explore</div>
+                    <div class="loop-arrow">→</div>
+                    <div class="loop-item">⚔️ Fight</div>
+                    <div class="loop-arrow">→</div>
+                    <div class="loop-item">🎯 Choose</div>
+                    <div class="loop-arrow">→</div>
+                    <div class="loop-item">💪 Power Up</div>
+                    <div class="loop-arrow">→</div>
+                    <div class="loop-item">🎰 Push Luck</div>
+                </div>
+                <p class="loop-description">
+                    Each run is unique. Death is not the end - it's a chance to try a new build!
+                </p>
+            </div>
+            
+            <div class="info-panel tips-panel">
+                <h3>Tips</h3>
+                <ul class="tips-list">
+                    <li>🛡️ Dash has invincibility frames - use them wisely!</li>
+                    <li>💥 Light attacks combo up to 3 hits for bonus damage</li>
+                    <li>🎯 Enemies telegraph their attacks - watch for the red zones</li>
+                    <li>💰 Save gold for shop rooms every 5 levels</li>
+                    <li>🏃 Speed is life - keep moving!</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer-info">
+            <p class="tech-stack">Built with Rust • WebAssembly • WebRTC</p>
+            <p class="performance">60 FPS • <2MB Download • P2P Multiplayer</p>
+        </div>
     </div>
-  </noscript>
+    
+    <!-- Game Container (hidden initially) -->
+    <div id="game-container" style="display: none;">
+        <div id="game-ui">
+            <div class="game-header">
+                <div class="player-info">
+                    <div class="health-bar">
+                        <div class="health-fill"></div>
+                        <span class="health-text">100/100</span>
+                    </div>
+                    <div class="stats">
+                        <span class="stat-item">Room: <span id="room-number">1</span></span>
+                        <span class="stat-item">Gold: <span id="gold">0</span></span>
+                        <span class="stat-item">Souls: <span id="souls">0</span></span>
+                    </div>
+                </div>
+                <button id="menu-button" class="menu-button">Menu</button>
+            </div>
+            
+            <canvas id="game-canvas"></canvas>
+            
+            <div id="room-transition" class="transition-screen" style="display: none;">
+                <h2>Entering Room <span id="next-room-number">2</span></h2>
+                <p class="room-type">Combat Room</p>
+            </div>
+            
+            <div id="death-screen" class="overlay-screen" style="display: none;">
+                <h2>You Died</h2>
+                <div class="death-stats">
+                    <p>Rooms Cleared: <span id="rooms-cleared">0</span></p>
+                    <p>Enemies Killed: <span id="enemies-killed">0</span></p>
+                    <p>Gold Collected: <span id="gold-collected">0</span></p>
+                    <p>Time: <span id="run-time">0:00</span></p>
+                </div>
+                <button id="restart-button" class="restart-button">Try Again</button>
+            </div>
+        </div>
+    </div>
+    
+    <script type="module" src="/src/main.ts"></script>
 </body>
 </html>
