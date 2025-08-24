@@ -4,6 +4,9 @@ use crate::components::*;
 use crate::resources::*;
 use crate::enemy::{spawn_melee_enemy, spawn_ranged_enemy};
 
+// Explicitly use our Direction enum to avoid ambiguity with any potential Bevy Direction
+use crate::components::Direction;
+
 pub struct RoomPlugin;
 
 impl Plugin for RoomPlugin {
