@@ -5,6 +5,9 @@ edition = "2021"
 authors = ["Game Developer"]
 description = "A lightweight multiplayer browser game using WebAssembly"
 
+[lib]
+crate-type = ["cdylib", "rlib"]
+
 [dependencies]
 bevy = { version = "0.14", default-features = false, features = [
     "bevy_winit",
