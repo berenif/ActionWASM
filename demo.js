@@ -43,8 +43,12 @@ window.addEventListener('unhandledrejection', (event) => {
 });
 
 // Performance monitoring
+let fpsAnimationId = null;
+let metricsIntervalId = null;
+
 function startPerformanceMonitoring() {
-    let animationId = null;
+    // Stop any existing monitoring first
+    stopPerformanceMonitoring();
     
     function updateFPS() {
         try {
@@ -56,20 +60,15 @@ function startPerformanceMonitoring() {
                 const fpsElement = document.getElementById('fps-counter');
                 if (fpsElement) {
                     fpsElement.textContent = fpsCounter;
-                } else {
-                    console.warn('FPS counter element not found');
                 }
                 frameCount = 0;
                 lastTime = currentTime;
             }
             
-            animationId = requestAnimationFrame(updateFPS);
+            fpsAnimationId = requestAnimationFrame(updateFPS);
         } catch (error) {
             console.error('Error in FPS monitoring:', error);
-            // Stop the animation loop on error
-            if (animationId) {
-                cancelAnimationFrame(animationId);
-            }
+            stopPerformanceMonitoring();
         }
     }
     
@@ -77,9 +76,25 @@ function startPerformanceMonitoring() {
     console.log('Performance monitoring started');
 }
 
+function stopPerformanceMonitoring() {
+    if (fpsAnimationId) {
+        cancelAnimationFrame(fpsAnimationId);
+        fpsAnimationId = null;
+    }
+    if (metricsIntervalId) {
+        clearInterval(metricsIntervalId);
+        metricsIntervalId = null;
+    }
+}
+
 // Update performance metrics
 function updateMetrics() {
-    const intervalId = setInterval(() => {
+    // Clear any existing interval first
+    if (metricsIntervalId) {
+        clearInterval(metricsIntervalId);
+    }
+    
+    metricsIntervalId = setInterval(() => {
         try {
             // Simulate realistic metrics
             latencyCounter = Math.floor(Math.random() * 20) + 10;
@@ -94,11 +109,14 @@ function updateMetrics() {
             if (memoryElement) memoryElement.textContent = memoryCounter;
             if (entitiesElement) entitiesElement.textContent = entitiesCounter;
             
-            // Log metrics update for debugging
-            console.log(`Metrics updated - FPS: ${fpsCounter}, Latency: ${latencyCounter}ms, Memory: ${memoryCounter}MB, Entities: ${entitiesCounter}`);
+            // Remove verbose logging to improve performance
+            // Only log errors or important events
         } catch (error) {
             console.error('Error updating metrics:', error);
-            clearInterval(intervalId);
+            if (metricsIntervalId) {
+                clearInterval(metricsIntervalId);
+                metricsIntervalId = null;
+            }
         }
     }, 2000);
     console.log('Metrics monitoring started');
@@ -258,8 +276,38 @@ function demoMultiplayer() {
     }, 100);
 }
 
+// Global function to stop all animations
+function stopAllAnimations() {
+    // Stop all animation frames
+    if (typeof fpsAnimationId !== 'undefined' && fpsAnimationId) {
+        cancelAnimationFrame(fpsAnimationId);
+        fpsAnimationId = null;
+    }
+    if (typeof combatAnimationId !== 'undefined' && combatAnimationId) {
+        cancelAnimationFrame(combatAnimationId);
+        combatAnimationId = null;
+    }
+    if (typeof enemyAnimationId !== 'undefined' && enemyAnimationId) {
+        cancelAnimationFrame(enemyAnimationId);
+        enemyAnimationId = null;
+    }
+    if (typeof loadingAnimationId !== 'undefined' && loadingAnimationId) {
+        cancelAnimationFrame(loadingAnimationId);
+        loadingAnimationId = null;
+    }
+    
+    // Clear any intervals
+    if (typeof metricsIntervalId !== 'undefined' && metricsIntervalId) {
+        clearInterval(metricsIntervalId);
+        metricsIntervalId = null;
+    }
+}
+
 // Helper function to switch to demo tab
 function switchToDemoTab() {
+    // Stop any running animations before switching
+    stopAllAnimations();
+    
     // Hide all tabs
     const tabs = document.querySelectorAll('.tab-content');
     tabs.forEach(tab => tab.classList.remove('active'));
@@ -375,7 +423,15 @@ function demoRoguelike() {
 }
 
 // Combat System Demo
+let combatAnimationId = null;
+
 function demoCombat() {
+    // Cancel any existing combat animation
+    if (combatAnimationId) {
+        cancelAnimationFrame(combatAnimationId);
+        combatAnimationId = null;
+    }
+    
     // Switch to demo tab first
     switchToDemoTab();
     
@@ -430,8 +486,9 @@ function demoCombat() {
             
             frame++;
             if (frame < maxFrames) {
-                requestAnimationFrame(animateCombat);
+                combatAnimationId = requestAnimationFrame(animateCombat);
             } else {
+                combatAnimationId = null;
                 showNotification('Combat Demo Complete!');
             }
         }
@@ -441,7 +498,15 @@ function demoCombat() {
 }
 
 // Enemy AI Demo
+let enemyAnimationId = null;
+
 function demoEnemyAI() {
+    // Cancel any existing enemy animation
+    if (enemyAnimationId) {
+        cancelAnimationFrame(enemyAnimationId);
+        enemyAnimationId = null;
+    }
+    
     // Switch to demo tab first
     switchToDemoTab();
     
@@ -495,8 +560,9 @@ function demoEnemyAI() {
             
             frame++;
             if (frame < maxFrames) {
-                requestAnimationFrame(animateEnemies);
+                enemyAnimationId = requestAnimationFrame(animateEnemies);
             } else {
+                enemyAnimationId = null;
                 showNotification('Enemy AI Demo Complete!');
             }
         }
@@ -737,7 +803,15 @@ function launchPvP() {
     simulateGameLaunch('PvP Arena', 'Player vs Player combat');
 }
 
+let loadingAnimationId = null;
+
 function simulateGameLaunch(mode, description) {
+    // Cancel any existing loading animation
+    if (loadingAnimationId) {
+        cancelAnimationFrame(loadingAnimationId);
+        loadingAnimationId = null;
+    }
+    
     const canvas = document.getElementById('demo-canvas');
     if (!canvas) return;
     
@@ -787,8 +861,9 @@ function simulateGameLaunch(mode, description) {
         
         progress += 2;
         if (progress <= maxProgress) {
-            requestAnimationFrame(animateLoading);
+            loadingAnimationId = requestAnimationFrame(animateLoading);
         } else {
+            loadingAnimationId = null;
             ctx.fillStyle = '#4ade80';
             ctx.font = '24px Inter, sans-serif';
             ctx.fillText('Ready to Play!', canvas.width / 2, canvas.height / 2 + 100);

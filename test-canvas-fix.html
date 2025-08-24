@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas Fix Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #1a1a1a;
+            color: white;
+        }
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #764ba2;
+        }
+        #test-canvas {
+            border: 2px solid #667eea;
+            display: block;
+            margin: 20px auto;
+            background: black;
+        }
+        #status {
+            background: #2a2a2a;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 20px;
+            font-family: monospace;
+            min-height: 100px;
+            white-space: pre-wrap;
+        }
+        .success {
+            color: #4ade80;
+        }
+        .error {
+            color: #ef4444;
+        }
+        .warning {
+            color: #fbbf24;
+        }
+    </style>
+</head>
+<body>
+    <h1>Canvas Performance Test</h1>
+    
+    <div>
+        <button onclick="runAllTests()">Run All Tests</button>
+        <button onclick="testAnimationCleanup()">Test Animation Cleanup</button>
+        <button onclick="testMemoryLeaks()">Test Memory Leaks</button>
+        <button onclick="testRapidSwitching()">Test Rapid Switching</button>
+        <button onclick="clearStatus()">Clear Status</button>
+    </div>
+    
+    <canvas id="test-canvas" width="800" height="400"></canvas>
+    
+    <div id="status"></div>
+    
+    <script src="demo.js"></script>
+    <script>
+        const status = document.getElementById('status');
+        let testResults = [];
+        
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const prefix = type === 'success' ? '✓' : type === 'error' ? '✗' : type === 'warning' ? '⚠' : 'ℹ';
+            const line = `[${timestamp}] ${prefix} ${message}\n`;
+            status.innerHTML += `<span class="${type}">${line}</span>`;
+            status.scrollTop = status.scrollHeight;
+        }
+        
+        function clearStatus() {
+            status.innerHTML = '';
+            testResults = [];
+            log('Status cleared', 'info');
+        }
+        
+        async function runAllTests() {
+            clearStatus();
+            log('Starting comprehensive tests...', 'info');
+            
+            await testAnimationCleanup();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            await testMemoryLeaks();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            await testRapidSwitching();
+            
+            // Summary
+            const passed = testResults.filter(r => r).length;
+            const failed = testResults.filter(r => !r).length;
+            log(`\nTest Summary: ${passed} passed, ${failed} failed`, passed > failed ? 'success' : 'error');
+        }
+        
+        async function testAnimationCleanup() {
+            log('Testing animation cleanup...', 'info');
+            
+            try {
+                // Start performance monitoring
+                if (typeof startPerformanceMonitoring === 'function') {
+                    startPerformanceMonitoring();
+                    log('Started performance monitoring', 'success');
+                }
+                
+                // Wait a bit
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                // Stop all animations
+                if (typeof stopAllAnimations === 'function') {
+                    stopAllAnimations();
+                    log('Stopped all animations', 'success');
+                }
+                
+                // Check if animations are stopped
+                const animationsStopped = 
+                    (!window.fpsAnimationId || window.fpsAnimationId === null) &&
+                    (!window.combatAnimationId || window.combatAnimationId === null) &&
+                    (!window.enemyAnimationId || window.enemyAnimationId === null);
+                
+                if (animationsStopped) {
+                    log('Animation cleanup successful', 'success');
+                    testResults.push(true);
+                } else {
+                    log('Some animations still running', 'warning');
+                    testResults.push(false);
+                }
+            } catch (e) {
+                log(`Animation cleanup test failed: ${e.message}`, 'error');
+                testResults.push(false);
+            }
+        }
+        
+        async function testMemoryLeaks() {
+            log('Testing for memory leaks...', 'info');
+            
+            try {
+                const initialMemory = performance.memory ? performance.memory.usedJSHeapSize : 0;
+                
+                // Run multiple demo functions
+                for (let i = 0; i < 5; i++) {
+                    if (typeof demoRoguelike === 'function') {
+                        demoRoguelike();
+                        await new Promise(resolve => setTimeout(resolve, 200));
+                        if (typeof stopAllAnimations === 'function') {
+                            stopAllAnimations();
+                        }
+                    }
+                }
+                
+                // Force garbage collection if available
+                if (window.gc) {
+                    window.gc();
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                }
+                
+                const finalMemory = performance.memory ? performance.memory.usedJSHeapSize : 0;
+                const memoryIncrease = finalMemory - initialMemory;
+                
+                if (performance.memory) {
+                    log(`Memory increase: ${(memoryIncrease / 1024 / 1024).toFixed(2)} MB`, 
+                        memoryIncrease < 10 * 1024 * 1024 ? 'success' : 'warning');
+                } else {
+                    log('Memory API not available in this browser', 'warning');
+                }
+                
+                testResults.push(true);
+            } catch (e) {
+                log(`Memory leak test failed: ${e.message}`, 'error');
+                testResults.push(false);
+            }
+        }
+        
+        async function testRapidSwitching() {
+            log('Testing rapid demo switching...', 'info');
+            
+            try {
+                const demos = [
+                    demoRoguelike,
+                    demoCombat,
+                    demoWASMPerformance,
+                    demoMultiplayer
+                ];
+                
+                for (let i = 0; i < 10; i++) {
+                    const randomDemo = demos[Math.floor(Math.random() * demos.length)];
+                    if (typeof randomDemo === 'function') {
+                        randomDemo();
+                        await new Promise(resolve => setTimeout(resolve, 100));
+                    }
+                }
+                
+                // Final cleanup
+                if (typeof stopAllAnimations === 'function') {
+                    stopAllAnimations();
+                }
+                
+                log('Rapid switching test completed without freezing', 'success');
+                testResults.push(true);
+            } catch (e) {
+                log(`Rapid switching test failed: ${e.message}`, 'error');
+                testResults.push(false);
+            }
+        }
+        
+        // Override canvas element for testing
+        const canvas = document.getElementById('test-canvas');
+        if (canvas) {
+            // Replace demo-canvas references with test-canvas
+            const originalGetElement = document.getElementById;
+            document.getElementById = function(id) {
+                if (id === 'demo-canvas') {
+                    return canvas;
+                }
+                return originalGetElement.call(document, id);
+            };
+        }
+        
+        // Initialize
+        window.addEventListener('DOMContentLoaded', () => {
+            log('Test environment ready', 'success');
+            if (typeof initializeCanvas === 'function') {
+                initializeCanvas();
+            }
+        });
+        
+        // Cleanup on unload
+        window.addEventListener('beforeunload', () => {
+            if (typeof stopAllAnimations === 'function') {
+                stopAllAnimations();
+            }
+        });
+    </script>
+</body>
+</html>

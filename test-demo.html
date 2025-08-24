@@ -84,6 +84,10 @@
         function testDemoRoguelike() {
             output.textContent = 'Testing demoRoguelike()...\n';
             try {
+                // Stop any running animations first
+                if (typeof stopAllAnimations === 'function') {
+                    stopAllAnimations();
+                }
                 demoRoguelike();
             } catch (e) {
                 console.error('Error:', e.message);
@@ -93,6 +97,10 @@
         function testDemoCombat() {
             output.textContent = 'Testing demoCombat()...\n';
             try {
+                // Stop any running animations first
+                if (typeof stopAllAnimations === 'function') {
+                    stopAllAnimations();
+                }
                 demoCombat();
             } catch (e) {
                 console.error('Error:', e.message);
@@ -102,6 +110,10 @@
         function testDemoWASM() {
             output.textContent = 'Testing demoWASMPerformance()...\n';
             try {
+                // Stop any running animations first
+                if (typeof stopAllAnimations === 'function') {
+                    stopAllAnimations();
+                }
                 demoWASMPerformance();
             } catch (e) {
                 console.error('Error:', e.message);
@@ -111,6 +123,10 @@
         function testDemoMultiplayer() {
             output.textContent = 'Testing demoMultiplayer()...\n';
             try {
+                // Stop any running animations first
+                if (typeof stopAllAnimations === 'function') {
+                    stopAllAnimations();
+                }
                 demoMultiplayer();
             } catch (e) {
                 console.error('Error:', e.message);
@@ -121,6 +137,13 @@
         window.addEventListener('DOMContentLoaded', () => {
             console.log('Page loaded, initializing...');
             initializeCanvas();
+        });
+        
+        // Clean up animations when page unloads
+        window.addEventListener('beforeunload', () => {
+            if (typeof stopAllAnimations === 'function') {
+                stopAllAnimations();
+            }
         });
     </script>
 </body>
