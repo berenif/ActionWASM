@@ -571,7 +571,7 @@ fn handle_door_interaction(
     if player_transform.is_err() {
         return;
     }
-    let player_pos = player_transform.unwrap().translation.truncate();
+    let player_pos = player_transform.translation.truncate();
     
     for (door, door_transform) in door_query.iter() {
         let door_pos = door_transform.translation.truncate();

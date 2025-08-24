@@ -34,11 +34,9 @@ fn update_enemy_ai(
     player_query: Query<(Entity, &Transform), With<LocalPlayer>>,
     time: Res<Time>,
 ) {
-    let player = player_query.get_single();
-    if player.is_err() {
+    let Ok((player_entity, player_transform)) = player_query.get_single() else {
         return; // No player to target
-    }
-    let (player_entity, player_transform) = player.unwrap();
+    };
     let player_pos = player_transform.translation.truncate();
 
     for (mut ai, enemy, transform, health, entity) in enemy_query.iter_mut() {
@@ -187,7 +185,7 @@ fn enemy_movement(
     if player_transform.is_err() {
         return;
     }
-    let player_pos = player_transform.unwrap().translation.truncate();
+    let player_pos = player_transform.translation.truncate();
 
     for (mut transform, mut velocity, enemy, ai) in enemy_query.iter_mut() {
         let enemy_pos = transform.translation.truncate();
@@ -266,7 +264,7 @@ fn enemy_attack_system(
     if player_transform.is_err() {
         return;
     }
-    let player_pos = player_transform.unwrap().translation.truncate();
+    let player_pos = player_transform.translation.truncate();
 
     for (entity, transform, enemy, ai, stats) in enemy_query.iter() {
         if ai.state != AIState::Attacking {
