@@ -1,0 +1,12 @@
+[target.wasm32-unknown-unknown]
+runner = "wasm-bindgen-test-runner"
+
+[build]
+target = "wasm32-unknown-unknown"
+
+[profile.release]
+opt-level = "z"
+lto = true
+
+[net]
+git-fetch-with-cli = true

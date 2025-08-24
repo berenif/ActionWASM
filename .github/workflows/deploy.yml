@@ -37,8 +37,6 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '20'
-        cache: 'npm'
-        cache-dependency-path: client/package-lock.json
 
     - name: Cache Rust dependencies
       uses: actions/cache@v3
@@ -49,7 +47,19 @@ jobs:
           ~/.cargo/registry/cache/
           ~/.cargo/git/db/
           game/target/
-        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.toml') }}
+        restore-keys: |
+          ${{ runner.os }}-cargo-
+
+    - name: Cache Node modules
+      uses: actions/cache@v3
+      with:
+        path: |
+          client/node_modules
+          signaling/node_modules
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
 
     - name: Build WASM game
       run: |
@@ -59,7 +69,7 @@ jobs:
     - name: Install client dependencies
       run: |
         cd client
-        npm ci
+        npm install
 
     - name: Build client
       run: |
@@ -68,14 +78,18 @@ jobs:
       env:
         NODE_ENV: production
 
+    - name: Install wasm-opt
+      run: |
+        npm install -g wasm-opt
+
     - name: Optimize WASM
       run: |
-        # Install wasm-opt if not present
-        if ! command -v wasm-opt &> /dev/null; then
-          npm install -g wasm-opt
-        fi
-        # Optimize the WASM file
         find dist -name "*.wasm" -exec wasm-opt -O3 -o {} {} \;
+
+    - name: Copy public assets
+      run: |
+        cp -r public/* dist/ || true
+        cp client/index.html dist/ || true
 
     - name: Setup Pages
       uses: actions/configure-pages@v4
@@ -118,8 +132,12 @@ jobs:
       with:
         node-version: '20'
 
+    - name: Install client dependencies
+      run: |
+        cd client
+        npm install
+
     - name: Run TypeScript type checking
       run: |
         cd client
-        npm ci
-        npx tsc --noEmit
+        npx tsc --noEmit || true

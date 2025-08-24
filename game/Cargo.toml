@@ -19,7 +19,7 @@ bevy = { version = "0.14", default-features = false, features = [
     "wayland",
     "serialize",
 ] }
-bevy_rapier2d = { version = "0.27", features = ["wasm-bindgen"] }
+bevy_rapier2d = { version = "0.27", features = ["wasm-bindgen"], optional = true }
 wasm-bindgen = "0.2"
 wasm-bindgen-futures = "0.4"
 web-sys = { version = "0.3", features = [
@@ -32,6 +32,8 @@ web-sys = { version = "0.3", features = [
     "RtcPeerConnection",
     "RtcDataChannel",
     "RtcDataChannelEvent",
+    "RtcDataChannelState",
+    "RtcDataChannelInit",
     "RtcPeerConnectionIceEvent",
     "RtcIceCandidate",
     "RtcSessionDescription",
@@ -39,6 +41,7 @@ web-sys = { version = "0.3", features = [
     "MessageEvent",
     "WebSocket",
     "BinaryType",
+    "Location",
 ] }
 js-sys = "0.3"
 serde = { version = "1.0", features = ["derive"] }
@@ -49,7 +52,6 @@ instant = { version = "0.1", features = ["wasm-bindgen"] }
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 console_error_panic_hook = "0.1"
-wasm-bindgen-console-logger = "0.1"
 log = "0.4"
 
 [profile.release]
@@ -63,3 +65,7 @@ panic = "abort"
 inherits = "release"
 opt-level = "z"
 lto = "fat"
+
+[features]
+default = []
+physics = ["bevy_rapier2d"]
