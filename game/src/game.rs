@@ -1,18 +1,40 @@
 use bevy::prelude::*;
 use serde::{Deserialize, Serialize};
+use crate::components::*;
+use crate::resources::*;
+use crate::movement::MovementPlugin;
+use crate::combat::{CombatPlugin, cleanup_hitboxes};
+use crate::enemy::EnemyPlugin;
+use crate::room::RoomPlugin;
 
 pub struct GamePlugin;
 
 impl Plugin for GamePlugin {
     fn build(&self, app: &mut App) {
+        // Initialize resources
         app.init_resource::<GameState>()
-            .init_resource::<PlayerList>()
-            .add_systems(Startup, setup_game)
+            .init_resource::<PlayerInventory>()
+            .init_resource::<RunStats>()
+            .init_resource::<CombatLog>()
+            .init_resource::<InputSettings>()
+            .init_resource::<AudioSettings>()
+            .init_resource::<PerformanceStats>();
+        
+        // Add sub-plugins for different systems
+        app.add_plugins((
+            MovementPlugin,
+            CombatPlugin,
+            EnemyPlugin,
+            RoomPlugin,
+        ));
+        
+        // Add core game systems
+        app.add_systems(Startup, setup_game)
             .add_systems(Update, (
-                handle_player_input,
-                update_player_positions,
-                sync_game_state,
-                render_players,
+                handle_pickups,
+                update_ui,
+                cleanup_hitboxes,
+                update_run_timer,
             ).chain());
     }
 }
@@ -58,10 +80,83 @@ pub struct RemotePlayer {
     pub id: String,
 }
 
+// New systems for the roguelike ARPG
+
+fn handle_pickups(
+    mut commands: Commands,
+    pickup_query: Query<(Entity, &Pickup, &Transform)>,
+    mut player_query: Query<(&Transform, &mut Health), With<LocalPlayer>>,
+    mut inventory: ResMut<PlayerInventory>,
+    mut run_stats: ResMut<RunStats>,
+) {
+    for (player_transform, mut health) in player_query.iter_mut() {
+        let player_pos = player_transform.translation.truncate();
+        
+        for (pickup_entity, pickup, pickup_transform) in pickup_query.iter() {
+            let pickup_pos = pickup_transform.translation.truncate();
+            let distance = player_pos.distance(pickup_pos);
+            
+            // Check if player is close enough to collect
+            if distance < 30.0 && pickup.auto_collect {
+                match pickup.pickup_type {
+                    PickupType::Gold => {
+                        inventory.gold += pickup.value as u32;
+                        run_stats.gold_collected += pickup.value as u32;
+                    }
+                    PickupType::Health => {
+                        health.heal(health.max * pickup.value);
+                    }
+                    PickupType::Soul => {
+                        inventory.souls += pickup.value as u32;
+                    }
+                    _ => {}
+                }
+                
+                // Remove pickup
+                commands.entity(pickup_entity).despawn();
+            }
+        }
+    }
+}
+
+fn update_ui(
+    mut text_query: Query<&mut Text, With<GameInfoText>>,
+    game_state: Res<GameState>,
+    inventory: Res<PlayerInventory>,
+    run_stats: Res<RunStats>,
+    current_room: Option<Res<CurrentRoom>>,
+) {
+    for mut text in text_query.iter_mut() {
+        let room_info = if let Some(room) = current_room {
+            format!("Enemies: {} | ", room.enemies_remaining)
+        } else {
+            String::new()
+        };
+        
+        text.sections[0].value = format!(
+            "Room {} | {}Gold: {} | Souls: {} | Time: {:.0}s",
+            game_state.room_number,
+            room_info,
+            inventory.gold,
+            inventory.souls,
+            run_stats.run_time,
+        );
+    }
+}
+
+fn update_run_timer(
+    mut run_stats: ResMut<RunStats>,
+    time: Res<Time>,
+    game_state: Res<GameState>,
+) {
+    if matches!(game_state.current_state, CurrentGameState::InRun) {
+        run_stats.run_time += time.delta_seconds();
+    }
+}
+
 fn setup_game(
     mut commands: Commands,
-    mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<ColorMaterial>>,
+    mut game_state: ResMut<GameState>,
 ) {
     // Camera
     commands.spawn(Camera2dBundle::default());
@@ -69,7 +164,7 @@ fn setup_game(
     // UI Text for game info
     commands.spawn(
         TextBundle::from_section(
-            "Waiting for players...",
+            "Room 1 | Gold: 0 | Souls: 0",
             TextStyle {
                 font_size: 30.0,
                 color: Color::WHITE,
@@ -84,54 +179,9 @@ fn setup_game(
         }),
     )
     .insert(GameInfoText);
-
-    // Game boundaries
-    let wall_thickness = 10.0;
-    let wall_color = Color::srgb(0.5, 0.5, 0.5);
     
-    // Top wall
-    commands.spawn(SpriteBundle {
-        sprite: Sprite {
-            color: wall_color,
-            custom_size: Some(Vec2::new(1200.0, wall_thickness)),
-            ..default()
-        },
-        transform: Transform::from_translation(Vec3::new(0.0, 400.0, 0.0)),
-        ..default()
-    });
-
-    // Bottom wall
-    commands.spawn(SpriteBundle {
-        sprite: Sprite {
-            color: wall_color,
-            custom_size: Some(Vec2::new(1200.0, wall_thickness)),
-            ..default()
-        },
-        transform: Transform::from_translation(Vec3::new(0.0, -400.0, 0.0)),
-        ..default()
-    });
-
-    // Left wall
-    commands.spawn(SpriteBundle {
-        sprite: Sprite {
-            color: wall_color,
-            custom_size: Some(Vec2::new(wall_thickness, 800.0)),
-            ..default()
-        },
-        transform: Transform::from_translation(Vec3::new(-600.0, 0.0, 0.0)),
-        ..default()
-    });
-
-    // Right wall
-    commands.spawn(SpriteBundle {
-        sprite: Sprite {
-            color: wall_color,
-            custom_size: Some(Vec2::new(wall_thickness, 800.0)),
-            ..default()
-        },
-        transform: Transform::from_translation(Vec3::new(600.0, 0.0, 0.0)),
-        ..default()
-    });
+    // Set initial game state
+    game_state.current_state = CurrentGameState::InRun;
 }
 
 #[derive(Component)]

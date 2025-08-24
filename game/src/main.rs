@@ -4,6 +4,12 @@ use wasm_bindgen::prelude::*;
 mod game;
 mod network;
 mod systems;
+mod components;
+mod resources;
+mod combat;
+mod movement;
+mod enemy;
+mod room;
 
 use game::GamePlugin;
 use network::NetworkPlugin;
@@ -23,7 +29,7 @@ pub fn run() {
     App::new()
         .add_plugins(DefaultPlugins.set(WindowPlugin {
             primary_window: Some(Window {
-                title: "Multiplayer WASM Game".to_string(),
+                title: "Roguelike ARPG".to_string(),
                 fit_canvas_to_parent: true,
                 prevent_default_event_handling: true,
                 canvas: Some("#game-canvas".to_string()),
