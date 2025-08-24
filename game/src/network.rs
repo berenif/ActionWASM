@@ -10,6 +10,25 @@ use web_sys::{
 use js_sys::{Object, Reflect, JSON};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
+use std::sync::{Arc, Mutex};
+
+// Wrapper types to make web-sys types thread-safe for Bevy
+#[derive(Clone)]
+struct WebSocketWrapper(Arc<Mutex<Option<WebSocket>>>);
+
+#[derive(Clone)]
+struct RtcPeerConnectionWrapper(Arc<Mutex<Option<RtcPeerConnection>>>);
+
+#[derive(Clone)]
+struct RtcDataChannelWrapper(Arc<Mutex<Option<RtcDataChannel>>>);
+
+// Implement Send and Sync for our wrappers (safe in WASM single-threaded environment)
+unsafe impl Send for WebSocketWrapper {}
+unsafe impl Sync for WebSocketWrapper {}
+unsafe impl Send for RtcPeerConnectionWrapper {}
+unsafe impl Sync for RtcPeerConnectionWrapper {}
+unsafe impl Send for RtcDataChannelWrapper {}
+unsafe impl Sync for RtcDataChannelWrapper {}
 
 pub struct NetworkPlugin;
 
@@ -30,7 +49,7 @@ impl Plugin for NetworkPlugin {
 pub struct NetworkState {
     pub player_id: String,
     pub room_id: Option<String>,
-    pub signaling_socket: Option<WebSocket>,
+    pub signaling_socket: WebSocketWrapper,
     pub is_connected: bool,
 }
 
@@ -39,16 +58,25 @@ impl Default for NetworkState {
         Self {
             player_id: generate_player_id(),
             room_id: None,
-            signaling_socket: None,
+            signaling_socket: WebSocketWrapper(Arc::new(Mutex::new(None))),
             is_connected: false,
         }
     }
 }
 
-#[derive(Resource, Default)]
+#[derive(Resource)]
 pub struct PeerConnections {
-    pub connections: HashMap<String, RtcPeerConnection>,
-    pub data_channels: HashMap<String, RtcDataChannel>,
+    pub connections: HashMap<String, RtcPeerConnectionWrapper>,
+    pub data_channels: HashMap<String, RtcDataChannelWrapper>,
+}
+
+impl Default for PeerConnections {
+    fn default() -> Self {
+        Self {
+            connections: HashMap::new(),
+            data_channels: HashMap::new(),
+        }
+    }
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]

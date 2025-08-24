@@ -5,6 +5,9 @@ edition = "2021"
 authors = ["Game Developer"]
 description = "A lightweight multiplayer browser game using WebAssembly"
 
+[lib]
+crate-type = ["cdylib", "rlib"]
+
 [dependencies]
 bevy = { version = "0.14", default-features = false, features = [
     "bevy_winit",
@@ -47,13 +50,14 @@ js-sys = "0.3"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 bincode = "1.3"
-getrandom = { version = "0.2", features = ["js"] }
 instant = { version = "0.1", features = ["wasm-bindgen"] }
 rand = "0.8"
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 console_error_panic_hook = "0.1"
 log = "0.4"
+# Override getrandom for WASM builds - both 0.2 and 0.3 versions
+getrandom = { version = "0.2", features = ["js"] }
 
 [profile.release]
 opt-level = "z"
@@ -70,3 +74,12 @@ lto = "fat"
 [features]
 default = []
 physics = ["bevy_rapier2d"]
+
+# Override dependencies to fix WASM build  
+[dependencies.getrandom]
+version = "0.3"
+features = ["std", "wasm_js"]
+
+[dependencies.uuid]
+version = "1"
+features = ["v4", "js"]
