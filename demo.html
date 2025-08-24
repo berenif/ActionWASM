@@ -10,7 +10,7 @@
         // Global configuration for the game
         window.GAME_CONFIG = {
             signalingUrl: window.location.hostname === 'localhost' 
-                ? 'ws://localhost:8080' 
+                ? 'ws://localhost:8081'  // Changed to 8081 to avoid conflict with HTTP server
                 : 'wss://your-signaling-server.com/ws'
         };
     </script>
@@ -899,23 +899,39 @@ async function createPeerConnection(roomCode: string) {
             section.classList.toggle('expanded');
         }
 
-        // Sync performance counters
-        setInterval(() => {
-            const fps = document.getElementById('fps-counter').textContent;
-            const latency = document.getElementById('latency-counter').textContent;
-            const memory = document.getElementById('memory-counter').textContent;
-            const entities = document.getElementById('entities-counter').textContent;
-            
-            // Update duplicates
-            const fps2 = document.getElementById('fps-counter-2');
-            const latency2 = document.getElementById('latency-counter-2');
-            const memory2 = document.getElementById('memory-counter-2');
-            const entities2 = document.getElementById('entities-counter-2');
-            
-            if (fps2) fps2.textContent = fps;
-            if (latency2) latency2.textContent = latency;
-            if (memory2) memory2.textContent = memory;
-            if (entities2) entities2.textContent = entities;
+        // Sync performance counters with error handling
+        const syncInterval = setInterval(() => {
+            try {
+                const fpsElement = document.getElementById('fps-counter');
+                const latencyElement = document.getElementById('latency-counter');
+                const memoryElement = document.getElementById('memory-counter');
+                const entitiesElement = document.getElementById('entities-counter');
+                
+                if (!fpsElement || !latencyElement || !memoryElement || !entitiesElement) {
+                    console.warn('Performance counter elements not found, stopping sync');
+                    clearInterval(syncInterval);
+                    return;
+                }
+                
+                const fps = fpsElement.textContent;
+                const latency = latencyElement.textContent;
+                const memory = memoryElement.textContent;
+                const entities = entitiesElement.textContent;
+                
+                // Update duplicates
+                const fps2 = document.getElementById('fps-counter-2');
+                const latency2 = document.getElementById('latency-counter-2');
+                const memory2 = document.getElementById('memory-counter-2');
+                const entities2 = document.getElementById('entities-counter-2');
+                
+                if (fps2) fps2.textContent = fps;
+                if (latency2) latency2.textContent = latency;
+                if (memory2) memory2.textContent = memory;
+                if (entities2) entities2.textContent = entities;
+            } catch (error) {
+                console.error('Error syncing performance counters:', error);
+                clearInterval(syncInterval);
+            }
         }, 100);
     </script>
     <script src="demo.js"></script>

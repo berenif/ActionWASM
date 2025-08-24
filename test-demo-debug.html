@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo Debug Test</title>
+</head>
+<body>
+    <h1>Demo Debug Test</h1>
+    <p>Open the browser console to see debug messages</p>
+    <iframe src="demo.html" width="100%" height="600" style="border: 1px solid #ccc;"></iframe>
+    
+    <script>
+        console.log('Debug test page loaded');
+        
+        // Monitor the iframe
+        window.addEventListener('load', () => {
+            const iframe = document.querySelector('iframe');
+            console.log('Iframe element:', iframe);
+            
+            // Try to access iframe content after it loads
+            iframe.addEventListener('load', () => {
+                console.log('Iframe loaded');
+                try {
+                    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                    console.log('Iframe document:', iframeDoc);
+                    
+                    // Check for errors in the iframe
+                    iframe.contentWindow.addEventListener('error', (e) => {
+                        console.error('Error in iframe:', e);
+                    });
+                } catch (e) {
+                    console.error('Cannot access iframe content:', e);
+                }
+            });
+        });
+        
+        // Monitor for any unhandled errors
+        window.addEventListener('error', (e) => {
+            console.error('Global error:', e);
+        });
+    </script>
+</body>
+</html>
