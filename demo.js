@@ -18,42 +18,90 @@ let frameCount = 0;
 
 // Initialize demo on page load
 document.addEventListener('DOMContentLoaded', () => {
-    startPerformanceMonitoring();
-    initializeCanvas();
-    updateMetrics();
+    console.log('Demo initialization started');
+    try {
+        startPerformanceMonitoring();
+        initializeCanvas();
+        updateMetrics();
+        console.log('Demo initialization completed successfully');
+    } catch (error) {
+        console.error('Error during demo initialization:', error);
+    }
+});
+
+// Add global error handler for debugging
+window.addEventListener('error', (event) => {
+    console.error('Global error caught:', event.error);
+    console.error('Error message:', event.message);
+    console.error('Error source:', event.filename);
+    console.error('Line:', event.lineno, 'Column:', event.colno);
+});
+
+// Add unhandled promise rejection handler
+window.addEventListener('unhandledrejection', (event) => {
+    console.error('Unhandled promise rejection:', event.reason);
 });
 
 // Performance monitoring
 function startPerformanceMonitoring() {
+    let animationId = null;
+    
     function updateFPS() {
-        const currentTime = performance.now();
-        frameCount++;
-        
-        if (currentTime >= lastTime + 1000) {
-            fpsCounter = Math.round((frameCount * 1000) / (currentTime - lastTime));
-            document.getElementById('fps-counter').textContent = fpsCounter;
-            frameCount = 0;
-            lastTime = currentTime;
+        try {
+            const currentTime = performance.now();
+            frameCount++;
+            
+            if (currentTime >= lastTime + 1000) {
+                fpsCounter = Math.round((frameCount * 1000) / (currentTime - lastTime));
+                const fpsElement = document.getElementById('fps-counter');
+                if (fpsElement) {
+                    fpsElement.textContent = fpsCounter;
+                } else {
+                    console.warn('FPS counter element not found');
+                }
+                frameCount = 0;
+                lastTime = currentTime;
+            }
+            
+            animationId = requestAnimationFrame(updateFPS);
+        } catch (error) {
+            console.error('Error in FPS monitoring:', error);
+            // Stop the animation loop on error
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+            }
         }
-        
-        requestAnimationFrame(updateFPS);
     }
     
     updateFPS();
+    console.log('Performance monitoring started');
 }
 
 // Update performance metrics
 function updateMetrics() {
-    setInterval(() => {
-        // Simulate realistic metrics
-        latencyCounter = Math.floor(Math.random() * 20) + 10;
-        memoryCounter = Math.floor(Math.random() * 30) + 40;
-        entitiesCounter = Math.floor(Math.random() * 50) + 100;
-        
-        document.getElementById('latency-counter').textContent = latencyCounter;
-        document.getElementById('memory-counter').textContent = memoryCounter;
-        document.getElementById('entities-counter').textContent = entitiesCounter;
+    const intervalId = setInterval(() => {
+        try {
+            // Simulate realistic metrics
+            latencyCounter = Math.floor(Math.random() * 20) + 10;
+            memoryCounter = Math.floor(Math.random() * 30) + 40;
+            entitiesCounter = Math.floor(Math.random() * 50) + 100;
+            
+            const latencyElement = document.getElementById('latency-counter');
+            const memoryElement = document.getElementById('memory-counter');
+            const entitiesElement = document.getElementById('entities-counter');
+            
+            if (latencyElement) latencyElement.textContent = latencyCounter;
+            if (memoryElement) memoryElement.textContent = memoryCounter;
+            if (entitiesElement) entitiesElement.textContent = entitiesCounter;
+            
+            // Log metrics update for debugging
+            console.log(`Metrics updated - FPS: ${fpsCounter}, Latency: ${latencyCounter}ms, Memory: ${memoryCounter}MB, Entities: ${entitiesCounter}`);
+        } catch (error) {
+            console.error('Error updating metrics:', error);
+            clearInterval(intervalId);
+        }
     }, 2000);
+    console.log('Metrics monitoring started');
 }
 
 // Initialize canvas for visual demos
