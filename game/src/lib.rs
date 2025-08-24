@@ -41,13 +41,3 @@ pub fn run() {
         .add_plugins(NetworkPlugin)
         .run();
 }
-
-#[cfg(not(target_arch = "wasm32"))]
-fn main() {
-    wasm_multiplayer_game::run();
-}
-
-#[cfg(target_arch = "wasm32")]
-fn main() {
-    // This is required for WASM builds but won't be called
-}
