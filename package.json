@@ -4,19 +4,15 @@
   "private": true,
   "description": "WebAssembly multiplayer browser game",
   "scripts": {
-    "dev": "npm-run-all --parallel dev:*",
-    "dev:client": "cd client && npm run dev",
+    "dev": "npm run dev:signaling",
     "dev:signaling": "cd signaling && npm run dev",
-    "build": "npm run build:wasm && npm run build:client",
-    "build:wasm": "cd game && wasm-pack build --target web --out-dir ../client/src/wasm --release",
-    "build:client": "cd client && npm run build",
-    "install:all": "npm-run-all install:*",
-    "install:client": "cd client && npm install",
+    "build": "npm run build:wasm",
+    "build:wasm": "cd game && wasm-pack build --target web --out-dir ../public/wasm --release",
+    "install:all": "npm run install:signaling",
     "install:signaling": "cd signaling && npm install",
-    "test": "npm-run-all test:*",
+    "test": "npm run test:rust",
     "test:rust": "cd game && cargo test",
-    "test:client": "cd client && npm test",
-    "clean": "rm -rf dist client/src/wasm game/target node_modules client/node_modules signaling/node_modules"
+    "clean": "rm -rf dist public/wasm game/target node_modules signaling/node_modules"
   },
   "devDependencies": {
     "npm-run-all": "^4.1.5"

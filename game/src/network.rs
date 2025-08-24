@@ -120,35 +120,99 @@ fn setup_networking(
     {
         // Connect to signaling server
         let ws_url = get_signaling_url();
-        if let Ok(ws) = WebSocket::new(&ws_url) {
-            ws.set_binary_type(BinaryType::Arraybuffer);
-            
-            // Set up WebSocket event handlers
-            let onopen = Closure::wrap(Box::new(move || {
-                web_sys::console::log_1(&"Connected to signaling server".into());
-            }) as Box<dyn FnMut()>);
-            
-            ws.set_onopen(Some(onopen.as_ref().unchecked_ref()));
-            onopen.forget();
-            
-            network_state.signaling_socket = Some(ws);
-            network_state.is_connected = true;
+        match WebSocket::new(&ws_url) {
+            Ok(ws) => {
+                ws.set_binary_type(BinaryType::Arraybuffer);
+                
+                // Set up WebSocket event handlers
+                let onopen = Closure::wrap(Box::new(move || {
+                    web_sys::console::log_1(&"Connected to signaling server".into());
+                }) as Box<dyn FnMut()>);
+                
+                let onerror = Closure::wrap(Box::new(move |e: web_sys::ErrorEvent| {
+                    web_sys::console::error_1(&format!("WebSocket error: {:?}", e.message()).into());
+                }) as Box<dyn FnMut(web_sys::ErrorEvent)>);
+                
+                let onclose = Closure::wrap(Box::new(move |e: web_sys::CloseEvent| {
+                    web_sys::console::log_1(&format!("WebSocket closed: code={}, reason={}", e.code(), e.reason()).into());
+                }) as Box<dyn FnMut(web_sys::CloseEvent)>);
+                
+                ws.set_onopen(Some(onopen.as_ref().unchecked_ref()));
+                ws.set_onerror(Some(onerror.as_ref().unchecked_ref()));
+                ws.set_onclose(Some(onclose.as_ref().unchecked_ref()));
+                
+                onopen.forget();
+                onerror.forget();
+                onclose.forget();
+                
+                network_state.signaling_socket = Some(ws);
+                network_state.is_connected = true;
+            }
+            Err(e) => {
+                web_sys::console::error_1(&format!("Failed to create WebSocket: {:?}", e).into());
+                network_state.is_connected = false;
+            }
         }
     }
 }
 
 fn get_signaling_url() -> String {
     // Check if we're running locally or on GitHub Pages
-    let window = web_sys::window().unwrap();
+    let window = match web_sys::window() {
+        Some(w) => w,
+        None => {
+            web_sys::console::error_1(&"Failed to get window object".into());
+            return "ws://localhost:8080".to_string();
+        }
+    };
+    
     let location = window.location();
-    let hostname = location.hostname().unwrap();
+    let hostname = match location.hostname() {
+        Ok(h) => h,
+        Err(_) => {
+            web_sys::console::error_1(&"Failed to get hostname".into());
+            return "ws://localhost:8080".to_string();
+        }
+    };
     
     if hostname == "localhost" || hostname == "127.0.0.1" {
         "ws://localhost:8080".to_string()
     } else {
-        // For GitHub Pages, use a public signaling server or your own deployed server
-        "wss://your-signaling-server.herokuapp.com".to_string()
+        // Use environment-based URL or fallback to a configurable server
+        // Check for a meta tag or global config first
+        if let Some(url) = get_signaling_url_from_config() {
+            url
+        } else {
+            // Default to secure WebSocket with proper domain
+            format!("wss://{}/ws", hostname.replace("github.io", "signaling.example.com"))
+        }
     }
+}
+
+fn get_signaling_url_from_config() -> Option<String> {
+    // Try to get signaling URL from a meta tag or global config
+    if let Some(window) = web_sys::window() {
+        if let Ok(document) = window.document().ok_or("no document") {
+            // Look for meta tag with signaling server URL
+            if let Ok(meta) = document.query_selector("meta[name='signaling-server']") {
+                if let Some(meta_element) = meta {
+                    if let Some(content) = meta_element.get_attribute("content") {
+                        return Some(content);
+                    }
+                }
+            }
+        }
+        
+        // Check for global config object
+        if let Ok(config) = js_sys::Reflect::get(&window, &"GAME_CONFIG".into()) {
+            if let Ok(url) = js_sys::Reflect::get(&config, &"signalingUrl".into()) {
+                if let Some(url_str) = url.as_string() {
+                    return Some(url_str);
+                }
+            }
+        }
+    }
+    None
 }
 
 fn handle_signaling_messages(
@@ -214,7 +278,7 @@ fn broadcast_game_state(
 
 #[cfg(target_arch = "wasm32")]
 pub async fn create_peer_connection(peer_id: String) -> Result<RtcPeerConnection, JsValue> {
-    let window = web_sys::window().unwrap();
+    let window = web_sys::window().ok_or_else(|| JsValue::from_str("Failed to get window"))?;
     let rtc_peer_connection = Reflect::get(&window, &JsValue::from_str("RTCPeerConnection"))?;
     let rtc_peer_connection = rtc_peer_connection.dyn_into::<js_sys::Function>()?;
     

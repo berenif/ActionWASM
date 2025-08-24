@@ -3,8 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="signaling-server" content="wss://your-signaling-server.com/ws">
     <title>WASM Multiplayer Roguelike ARPG - Feature Demo</title>
     <link rel="icon" type="image/svg+xml" href="/public/favicon.svg">
+    <script>
+        // Global configuration for the game
+        window.GAME_CONFIG = {
+            signalingUrl: window.location.hostname === 'localhost' 
+                ? 'ws://localhost:8080' 
+                : 'wss://your-signaling-server.com/ws'
+        };
+    </script>
     <style>
         * {
             margin: 0;

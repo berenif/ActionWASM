@@ -66,11 +66,11 @@ function initializeCanvas() {
     
     const ctx = canvas.getContext('2d');
     if (!ctx) {
-        console.error('Could not get canvas 2D context!');
+        console.error('Failed to get 2D context for canvas');
         return;
     }
     
-    // Set canvas dimensions
+    // Set canvas dimensions with fallback
     canvas.width = canvas.offsetWidth || 800;
     canvas.height = canvas.offsetHeight || 600;
     
@@ -120,6 +120,9 @@ function drawDemoScene(ctx) {
 function demoWASMPerformance() {
     const startTime = performance.now();
     
+    // Switch to demo tab first
+    switchToDemoTab();
+    
     // Simulate WASM benchmark
     showNotification('Running WASM Performance Benchmark...');
     
@@ -129,7 +132,10 @@ function demoWASMPerformance() {
         
         // Update canvas with results
         const canvas = document.getElementById('demo-canvas');
+        if (!canvas) return;
+        
         const ctx = canvas.getContext('2d');
+        if (!ctx) return;
         
         ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -145,57 +151,63 @@ function demoWASMPerformance() {
         ctx.fillText(`Operations/sec: ${Math.floor(Math.random() * 1000000 + 500000)}`, canvas.width / 2, 190);
         ctx.fillText(`Memory Usage: ${memoryCounter}MB`, canvas.width / 2, 230);
         
-            showNotification('Benchmark Complete! Near-native performance achieved.');
-        }, 1500);
-    }, 100); // End of setTimeout for tab switch
+        showNotification('Benchmark Complete! Near-native performance achieved.');
+    }, 1500);
 }
 
 // Multiplayer Connection Demo
 function demoMultiplayer() {
-    showNotification('Testing P2P connection...');
+    // Switch to demo tab first
+    switchToDemoTab();
     
-    const canvas = document.getElementById('demo-canvas');
-    const ctx = canvas.getContext('2d');
-    
-    // Simulate connection visualization
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
-    // Draw network nodes
-    const nodes = [
-        { x: canvas.width / 2, y: canvas.height / 2, label: 'You', color: '#4ade80' },
-        { x: canvas.width / 4, y: canvas.height / 3, label: 'Peer 1', color: '#f093fb' },
-        { x: canvas.width * 3/4, y: canvas.height / 3, label: 'Peer 2', color: '#f093fb' },
-        { x: canvas.width / 4, y: canvas.height * 2/3, label: 'Peer 3', color: '#f093fb' },
-        { x: canvas.width * 3/4, y: canvas.height * 2/3, label: 'Peer 4', color: '#f093fb' }
-    ];
-    
-    // Draw connections
-    ctx.strokeStyle = 'rgba(102, 126, 234, 0.5)';
-    ctx.lineWidth = 2;
-    
-    for (let i = 1; i < nodes.length; i++) {
-        ctx.beginPath();
-        ctx.moveTo(nodes[0].x, nodes[0].y);
-        ctx.lineTo(nodes[i].x, nodes[i].y);
-        ctx.stroke();
-    }
-    
-    // Draw nodes
-    nodes.forEach(node => {
-        ctx.fillStyle = node.color;
-        ctx.beginPath();
-        ctx.arc(node.x, node.y, 20, 0, Math.PI * 2);
-        ctx.fill();
+    setTimeout(() => {
+        showNotification('Testing P2P connection...');
         
-        ctx.fillStyle = '#fff';
-        ctx.font = '14px Inter, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText(node.label, node.x, node.y + 40);
+        const canvas = document.getElementById('demo-canvas');
+        if (!canvas) return;
+        
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+        
+        // Simulate connection visualization
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Draw network nodes
+        const nodes = [
+            { x: canvas.width / 2, y: canvas.height / 2, label: 'You', color: '#4ade80' },
+            { x: canvas.width / 4, y: canvas.height / 3, label: 'Peer 1', color: '#f093fb' },
+            { x: canvas.width * 3/4, y: canvas.height / 3, label: 'Peer 2', color: '#f093fb' },
+            { x: canvas.width / 4, y: canvas.height * 2/3, label: 'Peer 3', color: '#f093fb' },
+            { x: canvas.width * 3/4, y: canvas.height * 2/3, label: 'Peer 4', color: '#f093fb' }
+        ];
+        
+        // Draw connections
+        ctx.strokeStyle = 'rgba(102, 126, 234, 0.5)';
+        ctx.lineWidth = 2;
+        
+        for (let i = 1; i < nodes.length; i++) {
+            ctx.beginPath();
+            ctx.moveTo(nodes[0].x, nodes[0].y);
+            ctx.lineTo(nodes[i].x, nodes[i].y);
+            ctx.stroke();
+        }
+        
+        // Draw nodes
+        nodes.forEach(node => {
+            ctx.fillStyle = node.color;
+            ctx.beginPath();
+            ctx.arc(node.x, node.y, 20, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.fillStyle = '#fff';
+            ctx.font = '14px Inter, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(node.label, node.x, node.y + 40);
         });
         
         showNotification('P2P Network Connected! Latency: 12ms');
-    }, 100); // End of setTimeout
+    }, 100);
 }
 
 // Helper function to switch to demo tab
@@ -240,74 +252,74 @@ function demoRoguelike() {
                 showNotification('Error: Canvas not found!');
                 return;
             }
-        
-        const ctx = canvas.getContext('2d');
-        if (!ctx) {
-            console.error('Could not get canvas context!');
-            showNotification('Error: Could not get canvas context!');
-            return;
-        }
-        
-        // Ensure canvas has proper dimensions
-        if (canvas.width === 0 || canvas.height === 0) {
-            canvas.width = canvas.offsetWidth || 800;
-            canvas.height = canvas.offsetHeight || 600;
-        }
-        
-        console.log(`Canvas dimensions: ${canvas.width}x${canvas.height}`);
-        
-        // Clear the canvas
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
-        // Generate random room layout
-        const tileSize = 20;
-        const roomWidth = Math.floor(canvas.width / tileSize);
-        const roomHeight = Math.floor(canvas.height / tileSize);
-        
-        console.log(`Generating ${roomWidth}x${roomHeight} room...`);
-        
-        // Generate room tiles
-        for (let x = 0; x < roomWidth; x++) {
-            for (let y = 0; y < roomHeight; y++) {
-                const isWall = x === 0 || x === roomWidth - 1 || y === 0 || y === roomHeight - 1 || Math.random() < 0.1;
-                
-                if (isWall) {
-                    ctx.fillStyle = '#374151';
-                } else {
-                    ctx.fillStyle = Math.random() < 0.05 ? '#f093fb' : '#1f2937';
-                }
-                
-                ctx.fillRect(x * tileSize, y * tileSize, tileSize - 1, tileSize - 1);
+            
+            const ctx = canvas.getContext('2d');
+            if (!ctx) {
+                console.error('Could not get canvas context!');
+                showNotification('Error: Could not get canvas context!');
+                return;
             }
-        }
-        
-        // Add player position
-        ctx.fillStyle = '#4ade80';
-        ctx.fillRect(canvas.width / 2 - 10, canvas.height / 2 - 10, 20, 20);
-        
-        // Add some enemies
-        ctx.fillStyle = '#ef4444';
-        for (let i = 0; i < 5; i++) {
-            const enemyX = Math.floor(Math.random() * (roomWidth - 2) + 1) * tileSize;
-            const enemyY = Math.floor(Math.random() * (roomHeight - 2) + 1) * tileSize;
-            ctx.fillRect(enemyX + 5, enemyY + 5, 10, 10);
-        }
-        
-        // Add some loot
-        ctx.fillStyle = '#fbbf24';
-        for (let i = 0; i < 3; i++) {
-            const lootX = Math.floor(Math.random() * (roomWidth - 2) + 1) * tileSize;
-            const lootY = Math.floor(Math.random() * (roomHeight - 2) + 1) * tileSize;
-            ctx.beginPath();
-            ctx.arc(lootX + 10, lootY + 10, 5, 0, Math.PI * 2);
-            ctx.fill();
-        }
-        
+            
+            // Ensure canvas has proper dimensions
+            if (canvas.width === 0 || canvas.height === 0) {
+                canvas.width = canvas.offsetWidth || 800;
+                canvas.height = canvas.offsetHeight || 600;
+            }
+            
+            console.log(`Canvas dimensions: ${canvas.width}x${canvas.height}`);
+            
+            // Clear the canvas
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Generate random room layout
+            const tileSize = 20;
+            const roomWidth = Math.floor(canvas.width / tileSize);
+            const roomHeight = Math.floor(canvas.height / tileSize);
+            
+            console.log(`Generating ${roomWidth}x${roomHeight} room...`);
+            
+            // Generate room tiles
+            for (let x = 0; x < roomWidth; x++) {
+                for (let y = 0; y < roomHeight; y++) {
+                    const isWall = x === 0 || x === roomWidth - 1 || y === 0 || y === roomHeight - 1 || Math.random() < 0.1;
+                    
+                    if (isWall) {
+                        ctx.fillStyle = '#374151';
+                    } else {
+                        ctx.fillStyle = Math.random() < 0.05 ? '#f093fb' : '#1f2937';
+                    }
+                    
+                    ctx.fillRect(x * tileSize, y * tileSize, tileSize - 1, tileSize - 1);
+                }
+            }
+            
+            // Add player position
+            ctx.fillStyle = '#4ade80';
+            ctx.fillRect(canvas.width / 2 - 10, canvas.height / 2 - 10, 20, 20);
+            
+            // Add some enemies
+            ctx.fillStyle = '#ef4444';
+            for (let i = 0; i < 5; i++) {
+                const enemyX = Math.floor(Math.random() * (roomWidth - 2) + 1) * tileSize;
+                const enemyY = Math.floor(Math.random() * (roomHeight - 2) + 1) * tileSize;
+                ctx.fillRect(enemyX + 5, enemyY + 5, 10, 10);
+            }
+            
+            // Add some loot
+            ctx.fillStyle = '#fbbf24';
+            for (let i = 0; i < 3; i++) {
+                const lootX = Math.floor(Math.random() * (roomWidth - 2) + 1) * tileSize;
+                const lootY = Math.floor(Math.random() * (roomHeight - 2) + 1) * tileSize;
+                ctx.beginPath();
+                ctx.arc(lootX + 10, lootY + 10, 5, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            
             const seed = Math.floor(Math.random() * 999999);
             showNotification('Room Generated! Seed: ' + seed);
             console.log('Roguelike demo completed successfully!');
-        }, 100); // End of setTimeout
+        }, 100);
     } catch (error) {
         console.error('Error in demoRoguelike:', error);
         showNotification('Error generating room: ' + error.message);
@@ -327,110 +339,122 @@ function demoCombat() {
             console.error('Canvas not found!');
             return;
         }
+        
         const ctx = canvas.getContext('2d');
-    
-    let frame = 0;
-    const maxFrames = 60;
-    
-    function animateCombat() {
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        if (!ctx) {
+            console.error('Could not get canvas context!');
+            return;
+        }
         
-        // Player
-        const playerX = canvas.width / 3;
-        const playerY = canvas.height / 2;
-        ctx.fillStyle = '#4ade80';
-        ctx.fillRect(playerX - 15, playerY - 15, 30, 30);
+        let frame = 0;
+        const maxFrames = 60;
         
-        // Enemy
-        const enemyX = canvas.width * 2/3;
-        const enemyY = canvas.height / 2;
-        ctx.fillStyle = '#ef4444';
-        ctx.fillRect(enemyX - 15, enemyY - 15, 30, 30);
-        
-        // Attack animation
-        if (frame % 20 < 10) {
-            ctx.strokeStyle = '#f093fb';
-            ctx.lineWidth = 3;
-            ctx.beginPath();
-            ctx.moveTo(playerX + 15, playerY);
-            ctx.lineTo(enemyX - 15, enemyY);
-            ctx.stroke();
+        function animateCombat() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
             
-            // Damage number
-            ctx.fillStyle = '#fbbf24';
-            ctx.font = 'bold 20px Inter, sans-serif';
-            ctx.fillText(Math.floor(Math.random() * 100 + 50), enemyX, enemyY - 30);
-        }
-        
-        frame++;
-        if (frame < maxFrames) {
-            requestAnimationFrame(animateCombat);
-        } else {
-            showNotification('Combat Demo Complete!');
-        }
+            // Player
+            const playerX = canvas.width / 3;
+            const playerY = canvas.height / 2;
+            ctx.fillStyle = '#4ade80';
+            ctx.fillRect(playerX - 15, playerY - 15, 30, 30);
+            
+            // Enemy
+            const enemyX = canvas.width * 2/3;
+            const enemyY = canvas.height / 2;
+            ctx.fillStyle = '#ef4444';
+            ctx.fillRect(enemyX - 15, enemyY - 15, 30, 30);
+            
+            // Attack animation
+            if (frame % 20 < 10) {
+                ctx.strokeStyle = '#f093fb';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(playerX + 15, playerY);
+                ctx.lineTo(enemyX - 15, enemyY);
+                ctx.stroke();
+                
+                // Damage number
+                ctx.fillStyle = '#fbbf24';
+                ctx.font = 'bold 20px Inter, sans-serif';
+                ctx.fillText(Math.floor(Math.random() * 100 + 50), enemyX, enemyY - 30);
+            }
+            
+            frame++;
+            if (frame < maxFrames) {
+                requestAnimationFrame(animateCombat);
+            } else {
+                showNotification('Combat Demo Complete!');
+            }
         }
         
         animateCombat();
-    }, 100); // End of setTimeout
+    }, 100);
 }
 
 // Enemy AI Demo
 function demoEnemyAI() {
-    showNotification('Spawning intelligent enemies...');
+    // Switch to demo tab first
+    switchToDemoTab();
     
-    const canvas = document.getElementById('demo-canvas');
-    const ctx = canvas.getContext('2d');
-    
-    const enemies = [];
-    for (let i = 0; i < 5; i++) {
-        enemies.push({
-            x: Math.random() * canvas.width,
-            y: Math.random() * canvas.height,
-            vx: (Math.random() - 0.5) * 2,
-            vy: (Math.random() - 0.5) * 2,
-            color: `hsl(${Math.random() * 60}, 100%, 50%)`
-        });
-    }
-    
-    let frame = 0;
-    const maxFrames = 120;
-    
-    function animateEnemies() {
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+    setTimeout(() => {
+        showNotification('Spawning intelligent enemies...');
         
-        // Update and draw enemies
-        enemies.forEach(enemy => {
-            // Simple AI movement
-            enemy.x += enemy.vx;
-            enemy.y += enemy.vy;
-            
-            // Bounce off walls
-            if (enemy.x < 0 || enemy.x > canvas.width) enemy.vx *= -1;
-            if (enemy.y < 0 || enemy.y > canvas.height) enemy.vy *= -1;
-            
-            // Draw enemy
-            ctx.fillStyle = enemy.color;
-            ctx.beginPath();
-            ctx.arc(enemy.x, enemy.y, 10, 0, Math.PI * 2);
-            ctx.fill();
-        });
+        const canvas = document.getElementById('demo-canvas');
+        if (!canvas) return;
         
-        // Draw player
-        ctx.fillStyle = '#4ade80';
-        ctx.fillRect(canvas.width / 2 - 15, canvas.height / 2 - 15, 30, 30);
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
         
-        frame++;
-        if (frame < maxFrames) {
-            requestAnimationFrame(animateEnemies);
-        } else {
-            showNotification('Enemy AI Demo Complete!');
+        const enemies = [];
+        for (let i = 0; i < 5; i++) {
+            enemies.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                vx: (Math.random() - 0.5) * 2,
+                vy: (Math.random() - 0.5) * 2,
+                color: `hsl(${Math.random() * 60}, 100%, 50%)`
+            });
         }
+        
+        let frame = 0;
+        const maxFrames = 120;
+        
+        function animateEnemies() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Update and draw enemies
+            enemies.forEach(enemy => {
+                // Simple AI movement
+                enemy.x += enemy.vx;
+                enemy.y += enemy.vy;
+                
+                // Bounce off walls
+                if (enemy.x < 0 || enemy.x > canvas.width) enemy.vx *= -1;
+                if (enemy.y < 0 || enemy.y > canvas.height) enemy.vy *= -1;
+                
+                // Draw enemy
+                ctx.fillStyle = enemy.color;
+                ctx.beginPath();
+                ctx.arc(enemy.x, enemy.y, 10, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            
+            // Draw player
+            ctx.fillStyle = '#4ade80';
+            ctx.fillRect(canvas.width / 2 - 15, canvas.height / 2 - 15, 30, 30);
+            
+            frame++;
+            if (frame < maxFrames) {
+                requestAnimationFrame(animateEnemies);
+            } else {
+                showNotification('Enemy AI Demo Complete!');
+            }
         }
         
         animateEnemies();
-    }, 100); // End of setTimeout
+    }, 100);
 }
 
 // Inventory Demo
@@ -446,73 +470,78 @@ function demoInventory() {
             console.error('Canvas not found!');
             return;
         }
+        
         const ctx = canvas.getContext('2d');
-    
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
-    // Draw inventory grid
-    const slotSize = 60;
-    const padding = 10;
-    const cols = 8;
-    const rows = 4;
-    const startX = (canvas.width - (cols * (slotSize + padding))) / 2;
-    const startY = 100;
-    
-    // Title
-    ctx.fillStyle = '#f093fb';
-    ctx.font = '24px Inter, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('Inventory System', canvas.width / 2, 50);
-    
-    // Draw slots
-    const items = [
-        { icon: '⚔️', rarity: 'legendary' },
-        { icon: '🛡️', rarity: 'rare' },
-        { icon: '🏹', rarity: 'common' },
-        { icon: '💎', rarity: 'epic' },
-        { icon: '🧪', rarity: 'common' },
-        { icon: '📜', rarity: 'rare' },
-        { icon: '🗝️', rarity: 'legendary' },
-        { icon: '💰', rarity: 'common' }
-    ];
-    
-    const rarityColors = {
-        common: '#9ca3af',
-        rare: '#3b82f6',
-        epic: '#a855f7',
-        legendary: '#f59e0b'
-    };
-    
-    for (let row = 0; row < rows; row++) {
-        for (let col = 0; col < cols; col++) {
-            const x = startX + col * (slotSize + padding);
-            const y = startY + row * (slotSize + padding);
-            
-            // Draw slot background
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
-            ctx.fillRect(x, y, slotSize, slotSize);
-            
-            // Draw item if exists
-            const itemIndex = row * cols + col;
-            if (itemIndex < items.length) {
-                const item = items[itemIndex];
-                
-                // Draw rarity border
-                ctx.strokeStyle = rarityColors[item.rarity];
-                ctx.lineWidth = 2;
-                ctx.strokeRect(x, y, slotSize, slotSize);
-                
-                // Draw item icon
-                ctx.font = '30px sans-serif';
-                ctx.textAlign = 'center';
-                ctx.fillText(item.icon, x + slotSize / 2, y + slotSize / 2 + 10);
-            }
+        if (!ctx) {
+            console.error('Could not get canvas context!');
+            return;
         }
+        
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Draw inventory grid
+        const slotSize = 60;
+        const padding = 10;
+        const cols = 8;
+        const rows = 4;
+        const startX = (canvas.width - (cols * (slotSize + padding))) / 2;
+        const startY = 100;
+        
+        // Title
+        ctx.fillStyle = '#f093fb';
+        ctx.font = '24px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('Inventory System', canvas.width / 2, 50);
+        
+        // Draw slots
+        const items = [
+            { icon: '⚔️', rarity: 'legendary' },
+            { icon: '🛡️', rarity: 'rare' },
+            { icon: '🏹', rarity: 'common' },
+            { icon: '💎', rarity: 'epic' },
+            { icon: '🧪', rarity: 'common' },
+            { icon: '📜', rarity: 'rare' },
+            { icon: '🗝️', rarity: 'legendary' },
+            { icon: '💰', rarity: 'common' }
+        ];
+        
+        const rarityColors = {
+            common: '#9ca3af',
+            rare: '#3b82f6',
+            epic: '#a855f7',
+            legendary: '#f59e0b'
+        };
+        
+        for (let row = 0; row < rows; row++) {
+            for (let col = 0; col < cols; col++) {
+                const x = startX + col * (slotSize + padding);
+                const y = startY + row * (slotSize + padding);
+                
+                // Draw slot background
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+                ctx.fillRect(x, y, slotSize, slotSize);
+                
+                // Draw item if exists
+                const itemIndex = row * cols + col;
+                if (itemIndex < items.length) {
+                    const item = items[itemIndex];
+                    
+                    // Draw rarity border
+                    ctx.strokeStyle = rarityColors[item.rarity];
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(x, y, slotSize, slotSize);
+                    
+                    // Draw item icon
+                    ctx.font = '30px sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(item.icon, x + slotSize / 2, y + slotSize / 2 + 10);
+                }
+            }
         }
         
         showNotification('Inventory loaded with ' + items.length + ' items!');
-    }, 100); // End of setTimeout
+    }, 100);
 }
 
 // Mobile Touch Demo
@@ -520,7 +549,10 @@ function demoMobile() {
     showNotification('Touch controls activated!');
     
     const canvas = document.getElementById('demo-canvas');
+    if (!canvas) return;
+    
     const ctx = canvas.getContext('2d');
+    if (!ctx) return;
     
     ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -585,7 +617,10 @@ function demoOffline() {
     }
     
     const canvas = document.getElementById('demo-canvas');
+    if (!canvas) return;
+    
     const ctx = canvas.getContext('2d');
+    if (!ctx) return;
     
     ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -656,7 +691,10 @@ function launchPvP() {
 
 function simulateGameLaunch(mode, description) {
     const canvas = document.getElementById('demo-canvas');
+    if (!canvas) return;
+    
     const ctx = canvas.getContext('2d');
+    if (!ctx) return;
     
     ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -712,6 +750,37 @@ function simulateGameLaunch(mode, description) {
     animateLoading();
 }
 
+// Add notification animations once
+(function() {
+    if (!document.getElementById('notification-styles')) {
+        const style = document.createElement('style');
+        style.id = 'notification-styles';
+        style.textContent = `
+            @keyframes slideIn {
+                from {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+            @keyframes slideOut {
+                from {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+                to {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+})();
+
 // Utility function to show notifications
 function showNotification(message) {
     // Create notification element
@@ -731,29 +800,15 @@ function showNotification(message) {
     `;
     notification.textContent = message;
     
-    // Add animation
-    const style = document.createElement('style');
-    style.textContent = `
-        @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-    `;
-    document.head.appendChild(style);
-    
     document.body.appendChild(notification);
     
     // Remove after 3 seconds
     setTimeout(() => {
         notification.style.animation = 'slideOut 0.3s ease';
         setTimeout(() => {
-            document.body.removeChild(notification);
+            if (notification.parentNode) {
+                document.body.removeChild(notification);
+            }
         }, 300);
     }, 3000);
 }

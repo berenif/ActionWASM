@@ -397,17 +397,17 @@ fn update_damage_numbers(
 
 fn handle_death(
     mut commands: Commands,
-    query: Query<(Entity, &Health, Option<&Enemy>, Option<&LocalPlayer>), With<Dead>>,
+    query: Query<(Entity, &Health, &Transform, Option<&Enemy>, Option<&LocalPlayer>), With<Dead>>,
     mut game_state: ResMut<GameState>,
     mut run_stats: ResMut<RunStats>,
 ) {
-    for (entity, health, maybe_enemy, maybe_player) in query.iter() {
+    for (entity, health, transform, maybe_enemy, maybe_player) in query.iter() {
         if let Some(_enemy) = maybe_enemy {
             // Enemy died
             run_stats.enemies_killed += 1;
             
-            // Spawn death effect
-            // TODO: Add particle effects, loot drops
+            // Spawn death effect - simplified for now
+            // In a full implementation, these would spawn actual particle and loot entities
             
             // Despawn enemy
             commands.entity(entity).despawn_recursive();
