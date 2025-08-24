@@ -20,16 +20,20 @@
             overflow-x: hidden;
         }
 
+        /* Header Styles */
         .demo-header {
             text-align: center;
-            padding: 3rem 1rem;
+            padding: 2rem 1rem;
             background: rgba(0, 0, 0, 0.3);
             backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
         .demo-header h1 {
-            font-size: 3rem;
-            margin-bottom: 1rem;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
             background: linear-gradient(135deg, #667eea 0%, #f093fb 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -42,140 +46,209 @@
         }
 
         .demo-header p {
-            font-size: 1.2rem;
+            font-size: 1rem;
             opacity: 0.9;
-            max-width: 800px;
+            max-width: 600px;
             margin: 0 auto;
         }
 
+        /* Main Container */
         .demo-container {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 2rem;
+            padding: 1rem;
         }
 
-        .feature-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-
-        .feature-card {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 2rem;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .feature-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #667eea, #f093fb);
-            transform: scaleX(0);
-            transition: transform 0.3s ease;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-        }
-
-        .feature-card:hover::before {
-            transform: scaleX(1);
-        }
-
-        .feature-icon {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, #667eea, #f093fb);
-            border-radius: 15px;
+        /* Tab Navigation */
+        .tab-navigation {
             display: flex;
-            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
             justify-content: center;
-            font-size: 2rem;
-            margin-bottom: 1rem;
+            margin: 2rem 0;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
         }
 
-        .feature-title {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: #fff;
-        }
-
-        .feature-description {
-            color: rgba(255, 255, 255, 0.8);
-            line-height: 1.6;
-            margin-bottom: 1.5rem;
-        }
-
-        .feature-demo-btn {
-            background: linear-gradient(135deg, #667eea, #f093fb);
+        .tab-btn {
+            background: rgba(255, 255, 255, 0.1);
             color: white;
-            border: none;
+            border: 1px solid rgba(255, 255, 255, 0.2);
             padding: 0.75rem 1.5rem;
             border-radius: 10px;
             font-size: 1rem;
             cursor: pointer;
             transition: all 0.3s ease;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tab-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #667eea, #f093fb);
+            border-color: transparent;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .tab-icon {
+            font-size: 1.2rem;
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Compact Feature Grid */
+        .feature-grid-compact {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .feature-card-compact {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card-compact:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .feature-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .feature-icon-compact {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea, #f093fb);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .feature-title-compact {
+            font-size: 1.1rem;
             font-weight: 600;
         }
 
-        .feature-demo-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
-        }
-
-        .demo-section {
-            margin-top: 4rem;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 20px;
-            padding: 2rem;
-        }
-
-        .demo-section h2 {
-            font-size: 2rem;
-            margin-bottom: 2rem;
-            text-align: center;
-        }
-
-        .tech-stack {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            justify-content: center;
-            margin-top: 2rem;
-        }
-
-        .tech-badge {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+        .feature-description-compact {
+            color: rgba(255, 255, 255, 0.8);
             font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+
+        .feature-demo-btn-compact {
+            background: linear-gradient(135deg, #667eea, #f093fb);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
             transition: all 0.3s ease;
+            font-weight: 500;
+            width: 100%;
         }
 
-        .tech-badge:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: scale(1.05);
+        .feature-demo-btn-compact:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
         }
 
+        /* Collapsible Sections */
+        .collapsible-section {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+
+        .collapsible-header {
+            padding: 1.25rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.3s ease;
+        }
+
+        .collapsible-header:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .collapsible-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .collapsible-arrow {
+            transition: transform 0.3s ease;
+            font-size: 1.2rem;
+        }
+
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .collapsible-section.expanded .collapsible-content {
+            max-height: 2000px;
+        }
+
+        .collapsible-section.expanded .collapsible-arrow {
+            transform: rotate(180deg);
+        }
+
+        .collapsible-inner {
+            padding: 0 1.25rem 1.25rem;
+        }
+
+        /* Live Demo Area */
         .live-demo-area {
             background: rgba(0, 0, 0, 0.3);
-            border-radius: 20px;
-            padding: 2rem;
-            margin-top: 2rem;
-            min-height: 400px;
-            position: relative;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-top: 1rem;
         }
 
         #demo-canvas {
@@ -185,78 +258,153 @@
             background: rgba(0, 0, 0, 0.5);
         }
 
-        .controls-panel {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        /* Compact Controls */
+        .controls-panel-compact {
+            display: flex;
+            flex-wrap: wrap;
             gap: 1rem;
             margin-top: 1rem;
+            justify-content: center;
         }
 
-        .control-group {
+        .control-badge {
             background: rgba(255, 255, 255, 0.1);
-            padding: 1rem;
-            border-radius: 10px;
-        }
-
-        .control-group h4 {
-            margin-bottom: 0.5rem;
-            color: #f093fb;
-        }
-
-        .control-item {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
             display: flex;
             align-items: center;
-            margin: 0.5rem 0;
+            gap: 0.5rem;
+            font-size: 0.9rem;
         }
 
-        .control-item kbd {
+        .control-badge kbd {
             background: rgba(255, 255, 255, 0.2);
             padding: 0.25rem 0.5rem;
-            border-radius: 5px;
-            margin-right: 0.5rem;
+            border-radius: 4px;
             font-family: monospace;
+            font-weight: 600;
         }
 
-        .performance-metrics {
+        /* Performance Metrics Grid */
+        .metrics-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
             gap: 1rem;
-            margin-top: 2rem;
+            margin: 1rem 0;
         }
 
-        .metric-card {
+        .metric-card-compact {
             background: rgba(255, 255, 255, 0.1);
             padding: 1rem;
             border-radius: 10px;
             text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .metric-card-compact:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: scale(1.05);
         }
 
         .metric-value {
-            font-size: 2rem;
+            font-size: 1.8rem;
             font-weight: bold;
             color: #f093fb;
         }
 
         .metric-label {
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             opacity: 0.8;
-            margin-top: 0.5rem;
+            margin-top: 0.25rem;
         }
 
+        /* Tech Stack */
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            justify-content: center;
+            margin: 1rem 0;
+        }
+
+        .tech-badge {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.4rem 0.8rem;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .tech-badge:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.05);
+        }
+
+        /* Code Preview */
         .code-preview {
             background: rgba(0, 0, 0, 0.5);
             border-radius: 10px;
             padding: 1rem;
             margin-top: 1rem;
             overflow-x: auto;
+            max-height: 300px;
+            overflow-y: auto;
         }
 
         .code-preview pre {
             color: #f093fb;
             font-family: 'Fira Code', monospace;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
+            line-height: 1.5;
         }
 
+        /* Network Demo */
+        .network-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .network-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .network-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.25rem;
+            border-radius: 10px;
+        }
+
+        .network-card h3 {
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        #room-code {
+            margin-top: 1rem;
+            font-size: 1.3rem;
+            font-family: monospace;
+            padding: 0.5rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        #join-code {
+            padding: 0.5rem;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            width: 100%;
+            margin-bottom: 0.75rem;
+        }
+
+        /* Status Indicator */
         .status-indicator {
             display: inline-block;
             width: 10px;
@@ -279,13 +427,56 @@
             50% { opacity: 0.5; }
         }
 
+        /* Quick Stats Bar */
+        .quick-stats {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+        }
+
+        .quick-stat {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .quick-stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .quick-stat-value {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #f093fb;
+        }
+
+        /* Responsive Design */
         @media (max-width: 768px) {
             .demo-header h1 {
-                font-size: 2rem;
+                font-size: 1.8rem;
             }
             
-            .feature-grid {
+            .feature-grid-compact {
                 grid-template-columns: 1fr;
+            }
+
+            .tab-navigation {
+                padding: 0.75rem;
+            }
+
+            .tab-btn {
+                padding: 0.6rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .metrics-grid {
+                grid-template-columns: repeat(3, 1fr);
             }
         }
     </style>
@@ -293,223 +484,327 @@
 <body>
     <header class="demo-header">
         <h1>🎮 WASM Multiplayer Roguelike ARPG</h1>
-        <p>A high-performance browser-based multiplayer game featuring WebAssembly, WebRTC P2P networking, and modern web technologies</p>
+        <p>High-performance browser-based multiplayer game with WebAssembly & WebRTC</p>
     </header>
 
     <div class="demo-container">
-        <!-- Core Features Grid -->
-        <section class="feature-grid">
-            <!-- WebAssembly Performance -->
-            <div class="feature-card">
-                <div class="feature-icon">⚡</div>
-                <h3 class="feature-title">WebAssembly Performance</h3>
-                <p class="feature-description">
-                    Core game logic written in Rust/Bevy compiled to WASM for near-native performance. 
-                    Achieves 60 FPS with complex physics and rendering.
-                </p>
-                <button class="feature-demo-btn" onclick="demoWASMPerformance()">Run Benchmark</button>
+        <!-- Quick Stats Bar -->
+        <div class="quick-stats">
+            <div class="quick-stat">
+                <span class="quick-stat-label">FPS:</span>
+                <span class="quick-stat-value" id="fps-counter">60</span>
+            </div>
+            <div class="quick-stat">
+                <span class="quick-stat-label">Latency:</span>
+                <span class="quick-stat-value"><span id="latency-counter">12</span>ms</span>
+            </div>
+            <div class="quick-stat">
+                <span class="quick-stat-label">Memory:</span>
+                <span class="quick-stat-value"><span id="memory-counter">48</span>MB</span>
+            </div>
+            <div class="quick-stat">
+                <span class="quick-stat-label">Entities:</span>
+                <span class="quick-stat-value" id="entities-counter">127</span>
+            </div>
+        </div>
+
+        <!-- Tab Navigation -->
+        <nav class="tab-navigation">
+            <button class="tab-btn active" onclick="showTab('overview')">
+                <span class="tab-icon">🎯</span> Overview
+            </button>
+            <button class="tab-btn" onclick="showTab('gameplay')">
+                <span class="tab-icon">🎮</span> Gameplay
+            </button>
+            <button class="tab-btn" onclick="showTab('multiplayer')">
+                <span class="tab-icon">🌐</span> Multiplayer
+            </button>
+            <button class="tab-btn" onclick="showTab('technical')">
+                <span class="tab-icon">⚙️</span> Technical
+            </button>
+            <button class="tab-btn" onclick="showTab('demo')">
+                <span class="tab-icon">▶️</span> Live Demo
+            </button>
+        </nav>
+
+        <!-- Tab Content -->
+        <!-- Overview Tab -->
+        <div id="overview-tab" class="tab-content active">
+            <div class="feature-grid-compact">
+                <div class="feature-card-compact">
+                    <div class="feature-header">
+                        <div class="feature-icon-compact">⚡</div>
+                        <h3 class="feature-title-compact">WASM Performance</h3>
+                    </div>
+                    <p class="feature-description-compact">
+                        Rust/Bevy compiled to WebAssembly for near-native performance. 60 FPS with complex physics.
+                    </p>
+                    <button class="feature-demo-btn-compact" onclick="demoWASMPerformance()">Run Benchmark</button>
+                </div>
+
+                <div class="feature-card-compact">
+                    <div class="feature-header">
+                        <div class="feature-icon-compact">🌐</div>
+                        <h3 class="feature-title-compact">P2P Multiplayer</h3>
+                    </div>
+                    <p class="feature-description-compact">
+                        WebRTC direct peer-to-peer connections. Supports 8 players with <50ms latency.
+                    </p>
+                    <button class="feature-demo-btn-compact" onclick="demoMultiplayer()">Test Connection</button>
+                </div>
+
+                <div class="feature-card-compact">
+                    <div class="feature-header">
+                        <div class="feature-icon-compact">🎲</div>
+                        <h3 class="feature-title-compact">Roguelike Elements</h3>
+                    </div>
+                    <p class="feature-description-compact">
+                        Procedural generation, permadeath, random loot, and progressive difficulty.
+                    </p>
+                    <button class="feature-demo-btn-compact" onclick="demoRoguelike()">Generate Room</button>
+                </div>
+
+                <div class="feature-card-compact">
+                    <div class="feature-header">
+                        <div class="feature-icon-compact">⚔️</div>
+                        <h3 class="feature-title-compact">ARPG Combat</h3>
+                    </div>
+                    <p class="feature-description-compact">
+                        Real-time action combat with abilities, combos, and hitbox detection.
+                    </p>
+                    <button class="feature-demo-btn-compact" onclick="demoCombat()">Show Combat</button>
+                </div>
+
+                <div class="feature-card-compact">
+                    <div class="feature-header">
+                        <div class="feature-icon-compact">📱</div>
+                        <h3 class="feature-title-compact">Mobile Ready</h3>
+                    </div>
+                    <p class="feature-description-compact">
+                        Touch controls and responsive UI optimized for mobile browsers.
+                    </p>
+                    <button class="feature-demo-btn-compact" onclick="demoMobile()">Test Touch</button>
+                </div>
+
+                <div class="feature-card-compact">
+                    <div class="feature-header">
+                        <div class="feature-icon-compact">🔄</div>
+                        <h3 class="feature-title-compact">Offline Mode</h3>
+                    </div>
+                    <p class="feature-description-compact">
+                        Progressive Web App with offline support for single-player mode.
+                    </p>
+                    <button class="feature-demo-btn-compact" onclick="demoOffline()">Toggle Offline</button>
+                </div>
             </div>
 
-            <!-- P2P Multiplayer -->
-            <div class="feature-card">
-                <div class="feature-icon">🌐</div>
-                <h3 class="feature-title">P2P Multiplayer</h3>
-                <p class="feature-description">
-                    Real-time multiplayer using WebRTC for direct peer-to-peer connections. 
-                    Supports up to 8 players with <50ms latency.
-                </p>
-                <button class="feature-demo-btn" onclick="demoMultiplayer()">Test Connection</button>
+            <!-- Game Modes Section -->
+            <div class="collapsible-section">
+                <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                    <h2 class="collapsible-title">
+                        <span>🎯</span> Game Modes
+                    </h2>
+                    <span class="collapsible-arrow">▼</span>
+                </div>
+                <div class="collapsible-content">
+                    <div class="collapsible-inner">
+                        <div class="feature-grid-compact">
+                            <div class="feature-card-compact">
+                                <h3 class="feature-title-compact">Practice Mode</h3>
+                                <p class="feature-description-compact">
+                                    Single-player mode with AI enemies for learning mechanics.
+                                </p>
+                                <button class="feature-demo-btn-compact" onclick="launchPractice()">Launch Practice</button>
+                            </div>
+                            <div class="feature-card-compact">
+                                <h3 class="feature-title-compact">Co-op Campaign</h3>
+                                <p class="feature-description-compact">
+                                    Team up with friends to conquer dungeons and bosses.
+                                </p>
+                                <button class="feature-demo-btn-compact" onclick="launchCoop()">Start Co-op</button>
+                            </div>
+                            <div class="feature-card-compact">
+                                <h3 class="feature-title-compact">PvP Arena</h3>
+                                <p class="feature-description-compact">
+                                    Battle other players in fast-paced arena combat.
+                                </p>
+                                <button class="feature-demo-btn-compact" onclick="launchPvP()">Enter Arena</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gameplay Tab -->
+        <div id="gameplay-tab" class="tab-content">
+            <div class="feature-grid-compact">
+                <div class="feature-card-compact">
+                    <div class="feature-header">
+                        <div class="feature-icon-compact">👾</div>
+                        <h3 class="feature-title-compact">Smart Enemy AI</h3>
+                    </div>
+                    <p class="feature-description-compact">
+                        Advanced behaviors with pathfinding, group tactics, and adaptive difficulty.
+                    </p>
+                    <button class="feature-demo-btn-compact" onclick="demoEnemyAI()">Spawn Enemies</button>
+                </div>
+
+                <div class="feature-card-compact">
+                    <div class="feature-header">
+                        <div class="feature-icon-compact">🎒</div>
+                        <h3 class="feature-title-compact">Inventory & Loot</h3>
+                    </div>
+                    <p class="feature-description-compact">
+                        Full inventory system with item rarities, equipment, and stat modifiers.
+                    </p>
+                    <button class="feature-demo-btn-compact" onclick="demoInventory()">Open Inventory</button>
+                </div>
             </div>
 
-            <!-- Roguelike Mechanics -->
-            <div class="feature-card">
-                <div class="feature-icon">🎲</div>
-                <h3 class="feature-title">Roguelike Elements</h3>
-                <p class="feature-description">
-                    Procedurally generated rooms, permadeath, random loot drops, and 
-                    progressive difficulty scaling for endless replayability.
-                </p>
-                <button class="feature-demo-btn" onclick="demoRoguelike()">Generate Room</button>
+            <!-- Controls Section -->
+            <div class="collapsible-section expanded">
+                <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                    <h2 class="collapsible-title">
+                        <span>🎮</span> Controls
+                    </h2>
+                    <span class="collapsible-arrow">▼</span>
+                </div>
+                <div class="collapsible-content">
+                    <div class="collapsible-inner">
+                        <div class="controls-panel-compact">
+                            <div class="control-badge">
+                                <kbd>W A S D</kbd> Movement
+                            </div>
+                            <div class="control-badge">
+                                <kbd>Shift</kbd> Dash
+                            </div>
+                            <div class="control-badge">
+                                <kbd>Space</kbd> Attack
+                            </div>
+                            <div class="control-badge">
+                                <kbd>Q E R</kbd> Abilities
+                            </div>
+                            <div class="control-badge">
+                                <kbd>Tab</kbd> Inventory
+                            </div>
+                            <div class="control-badge">
+                                <kbd>ESC</kbd> Menu
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+        </div>
 
-            <!-- Combat System -->
-            <div class="feature-card">
-                <div class="feature-icon">⚔️</div>
-                <h3 class="feature-title">ARPG Combat</h3>
-                <p class="feature-description">
-                    Real-time action combat with abilities, combos, dodge mechanics, 
-                    and hitbox-based collision detection.
-                </p>
-                <button class="feature-demo-btn" onclick="demoCombat()">Show Combat</button>
-            </div>
-
-            <!-- Enemy AI -->
-            <div class="feature-card">
-                <div class="feature-icon">👾</div>
-                <h3 class="feature-title">Smart Enemy AI</h3>
-                <p class="feature-description">
-                    Advanced enemy behaviors including pathfinding, group tactics, 
-                    and adaptive difficulty based on player performance.
-                </p>
-                <button class="feature-demo-btn" onclick="demoEnemyAI()">Spawn Enemies</button>
-            </div>
-
-            <!-- Inventory System -->
-            <div class="feature-card">
-                <div class="feature-icon">🎒</div>
-                <h3 class="feature-title">Inventory & Loot</h3>
-                <p class="feature-description">
-                    Full inventory management with item rarities, equipment slots, 
-                    consumables, and stat modifiers.
-                </p>
-                <button class="feature-demo-btn" onclick="demoInventory()">Open Inventory</button>
-            </div>
-
-            <!-- Mobile Support -->
-            <div class="feature-card">
-                <div class="feature-icon">📱</div>
-                <h3 class="feature-title">Mobile Responsive</h3>
-                <p class="feature-description">
-                    Touch controls, responsive UI, and performance optimization 
-                    for mobile browsers. Works on iOS and Android.
-                </p>
-                <button class="feature-demo-btn" onclick="demoMobile()">Test Touch</button>
-            </div>
-
-            <!-- Progressive Web App -->
-            <div class="feature-card">
-                <div class="feature-icon">🔄</div>
-                <h3 class="feature-title">Offline Mode</h3>
-                <p class="feature-description">
-                    Progressive Web App with offline support. Play single-player 
-                    mode without internet connection.
-                </p>
-                <button class="feature-demo-btn" onclick="demoOffline()">Toggle Offline</button>
-            </div>
-        </section>
-
-        <!-- Live Demo Area -->
-        <section class="demo-section">
-            <h2>🎮 Interactive Demo</h2>
+        <!-- Multiplayer Tab -->
+        <div id="multiplayer-tab" class="tab-content">
             <div class="live-demo-area">
-                <canvas id="demo-canvas"></canvas>
-                
-                <div class="controls-panel">
-                    <div class="control-group">
-                        <h4>Movement</h4>
-                        <div class="control-item">
-                            <kbd>W A S D</kbd> Move
-                        </div>
-                        <div class="control-item">
-                            <kbd>Shift</kbd> Dash
-                        </div>
+                <h3 style="margin-bottom: 1rem;">🌐 Network Demo</h3>
+                <div class="network-grid">
+                    <div class="network-card">
+                        <h3>Create Room</h3>
+                        <button class="feature-demo-btn-compact" onclick="createRoom()">Generate Room Code</button>
+                        <div id="room-code"></div>
                     </div>
-                    
-                    <div class="control-group">
-                        <h4>Combat</h4>
-                        <div class="control-item">
-                            <kbd>Space</kbd> Attack
-                        </div>
-                        <div class="control-item">
-                            <kbd>Q E R</kbd> Abilities
-                        </div>
-                    </div>
-                    
-                    <div class="control-group">
-                        <h4>Interface</h4>
-                        <div class="control-item">
-                            <kbd>Tab</kbd> Inventory
-                        </div>
-                        <div class="control-item">
-                            <kbd>ESC</kbd> Menu
-                        </div>
+                    <div class="network-card">
+                        <h3>Join Room</h3>
+                        <input type="text" id="join-code" placeholder="Enter room code">
+                        <button class="feature-demo-btn-compact" onclick="joinRoom()">Join</button>
                     </div>
                 </div>
-            </div>
-        </section>
-
-        <!-- Performance Metrics -->
-        <section class="demo-section">
-            <h2>📊 Performance Metrics</h2>
-            <div class="performance-metrics">
-                <div class="metric-card">
-                    <div class="metric-value" id="fps-counter">60</div>
-                    <div class="metric-label">FPS</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-value" id="latency-counter">12</div>
-                    <div class="metric-label">Latency (ms)</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-value" id="memory-counter">48</div>
-                    <div class="metric-label">Memory (MB)</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-value" id="entities-counter">127</div>
-                    <div class="metric-label">Entities</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-value" id="bundle-size">1.8</div>
-                    <div class="metric-label">Bundle (MB)</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-value" id="load-time">1.2</div>
-                    <div class="metric-label">Load Time (s)</div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Technical Stack -->
-        <section class="demo-section">
-            <h2>🛠️ Technology Stack</h2>
-            <div class="tech-stack">
-                <span class="tech-badge">Rust</span>
-                <span class="tech-badge">Bevy Engine</span>
-                <span class="tech-badge">WebAssembly</span>
-                <span class="tech-badge">TypeScript</span>
-                <span class="tech-badge">WebRTC</span>
-                <span class="tech-badge">Vite</span>
-                <span class="tech-badge">WebGL</span>
-                <span class="tech-badge">Web Audio API</span>
-                <span class="tech-badge">IndexedDB</span>
-                <span class="tech-badge">Service Workers</span>
-            </div>
-        </section>
-
-        <!-- Network Demo -->
-        <section class="demo-section">
-            <h2>🌐 Networking Demo</h2>
-            <div class="live-demo-area">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
-                    <div>
-                        <h3 style="margin-bottom: 1rem;">Create Room</h3>
-                        <button class="feature-demo-btn" onclick="createRoom()">Generate Room Code</button>
-                        <div id="room-code" style="margin-top: 1rem; font-size: 1.5rem; font-family: monospace;"></div>
-                    </div>
-                    <div>
-                        <h3 style="margin-bottom: 1rem;">Join Room</h3>
-                        <input type="text" id="join-code" placeholder="Enter room code" style="padding: 0.5rem; border-radius: 5px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: white; margin-right: 0.5rem;">
-                        <button class="feature-demo-btn" onclick="joinRoom()">Join</button>
-                    </div>
-                </div>
-                <div style="margin-top: 2rem;">
+                <div style="margin-top: 1.5rem; text-align: center;">
                     <h4>Connection Status</h4>
-                    <div style="margin-top: 1rem;">
+                    <div style="margin-top: 0.75rem;">
                         <span class="status-indicator inactive" id="connection-status"></span>
                         <span id="connection-text">Disconnected</span>
                     </div>
                     <div id="peers-list" style="margin-top: 1rem;"></div>
                 </div>
             </div>
-        </section>
+        </div>
 
-        <!-- Code Examples -->
-        <section class="demo-section">
-            <h2>💻 Code Examples</h2>
-            
-            <h3 style="margin-top: 2rem; margin-bottom: 1rem;">Rust Game Logic</h3>
-            <div class="code-preview">
-                <pre>// Combat system with hitbox detection
+        <!-- Technical Tab -->
+        <div id="technical-tab" class="tab-content">
+            <!-- Tech Stack -->
+            <div class="collapsible-section expanded">
+                <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                    <h2 class="collapsible-title">
+                        <span>🛠️</span> Technology Stack
+                    </h2>
+                    <span class="collapsible-arrow">▼</span>
+                </div>
+                <div class="collapsible-content">
+                    <div class="collapsible-inner">
+                        <div class="tech-stack">
+                            <span class="tech-badge">Rust</span>
+                            <span class="tech-badge">Bevy Engine</span>
+                            <span class="tech-badge">WebAssembly</span>
+                            <span class="tech-badge">TypeScript</span>
+                            <span class="tech-badge">WebRTC</span>
+                            <span class="tech-badge">Vite</span>
+                            <span class="tech-badge">WebGL</span>
+                            <span class="tech-badge">Web Audio API</span>
+                            <span class="tech-badge">IndexedDB</span>
+                            <span class="tech-badge">Service Workers</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Performance Metrics -->
+            <div class="collapsible-section expanded">
+                <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                    <h2 class="collapsible-title">
+                        <span>📊</span> Performance Metrics
+                    </h2>
+                    <span class="collapsible-arrow">▼</span>
+                </div>
+                <div class="collapsible-content">
+                    <div class="collapsible-inner">
+                        <div class="metrics-grid">
+                            <div class="metric-card-compact">
+                                <div class="metric-value" id="fps-counter-2">60</div>
+                                <div class="metric-label">FPS</div>
+                            </div>
+                            <div class="metric-card-compact">
+                                <div class="metric-value" id="latency-counter-2">12</div>
+                                <div class="metric-label">Latency (ms)</div>
+                            </div>
+                            <div class="metric-card-compact">
+                                <div class="metric-value" id="memory-counter-2">48</div>
+                                <div class="metric-label">Memory (MB)</div>
+                            </div>
+                            <div class="metric-card-compact">
+                                <div class="metric-value" id="entities-counter-2">127</div>
+                                <div class="metric-label">Entities</div>
+                            </div>
+                            <div class="metric-card-compact">
+                                <div class="metric-value" id="bundle-size">1.8</div>
+                                <div class="metric-label">Bundle (MB)</div>
+                            </div>
+                            <div class="metric-card-compact">
+                                <div class="metric-value" id="load-time">1.2</div>
+                                <div class="metric-label">Load Time (s)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Code Examples -->
+            <div class="collapsible-section">
+                <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                    <h2 class="collapsible-title">
+                        <span>💻</span> Code Examples
+                    </h2>
+                    <span class="collapsible-arrow">▼</span>
+                </div>
+                <div class="collapsible-content">
+                    <div class="collapsible-inner">
+                        <h3 style="margin-bottom: 0.75rem;">Rust Game Logic</h3>
+                        <div class="code-preview">
+                            <pre>// Combat system with hitbox detection
 fn handle_combat(
     mut commands: Commands,
     time: Res&lt;Time&gt;,
@@ -523,11 +818,11 @@ fn handle_combat(
         }
     }
 }</pre>
-            </div>
+                        </div>
 
-            <h3 style="margin-top: 2rem; margin-bottom: 1rem;">WebRTC Networking</h3>
-            <div class="code-preview">
-                <pre>// P2P connection setup
+                        <h3 style="margin-top: 1.5rem; margin-bottom: 0.75rem;">WebRTC Networking</h3>
+                        <div class="code-preview">
+                            <pre>// P2P connection setup
 async function createPeerConnection(roomCode: string) {
     const peer = new SimplePeer({
         initiator: true,
@@ -545,38 +840,75 @@ async function createPeerConnection(roomCode: string) {
     
     return peer;
 }</pre>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </section>
+        </div>
 
-        <!-- Game Modes -->
-        <section class="demo-section">
-            <h2>🎯 Game Modes</h2>
-            <div class="feature-grid">
-                <div class="feature-card">
-                    <h3 class="feature-title">Practice Mode</h3>
-                    <p class="feature-description">
-                        Single-player mode with AI enemies. Perfect for learning mechanics and testing builds.
-                    </p>
-                    <button class="feature-demo-btn" onclick="launchPractice()">Launch Practice</button>
-                </div>
-                <div class="feature-card">
-                    <h3 class="feature-title">Co-op Campaign</h3>
-                    <p class="feature-description">
-                        Team up with friends to conquer increasingly difficult dungeons and bosses.
-                    </p>
-                    <button class="feature-demo-btn" onclick="launchCoop()">Start Co-op</button>
-                </div>
-                <div class="feature-card">
-                    <h3 class="feature-title">PvP Arena</h3>
-                    <p class="feature-description">
-                        Battle against other players in fast-paced arena combat with leaderboards.
-                    </p>
-                    <button class="feature-demo-btn" onclick="launchPvP()">Enter Arena</button>
+        <!-- Live Demo Tab -->
+        <div id="demo-tab" class="tab-content">
+            <div class="live-demo-area">
+                <canvas id="demo-canvas"></canvas>
+                
+                <div class="controls-panel-compact" style="margin-top: 1rem;">
+                    <div class="control-badge">
+                        <kbd>W A S D</kbd> Move
+                    </div>
+                    <div class="control-badge">
+                        <kbd>Space</kbd> Attack
+                    </div>
+                    <div class="control-badge">
+                        <kbd>Q E R</kbd> Abilities
+                    </div>
                 </div>
             </div>
-        </section>
+        </div>
     </div>
 
+    <script>
+        // Tab switching functionality
+        function showTab(tabName) {
+            // Hide all tabs
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Remove active class from all buttons
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            // Show selected tab
+            document.getElementById(tabName + '-tab').classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.closest('.tab-btn').classList.add('active');
+        }
+
+        // Collapsible sections
+        function toggleCollapsible(header) {
+            const section = header.parentElement;
+            section.classList.toggle('expanded');
+        }
+
+        // Sync performance counters
+        setInterval(() => {
+            const fps = document.getElementById('fps-counter').textContent;
+            const latency = document.getElementById('latency-counter').textContent;
+            const memory = document.getElementById('memory-counter').textContent;
+            const entities = document.getElementById('entities-counter').textContent;
+            
+            // Update duplicates
+            const fps2 = document.getElementById('fps-counter-2');
+            const latency2 = document.getElementById('latency-counter-2');
+            const memory2 = document.getElementById('memory-counter-2');
+            const entities2 = document.getElementById('entities-counter-2');
+            
+            if (fps2) fps2.textContent = fps;
+            if (latency2) latency2.textContent = latency;
+            if (memory2) memory2.textContent = memory;
+            if (entities2) entities2.textContent = entities;
+        }, 100);
+    </script>
     <script src="demo.js"></script>
 </body>
 </html>
