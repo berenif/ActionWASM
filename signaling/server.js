@@ -1,5 +1,6 @@
 import { WebSocketServer } from 'ws';
 import { createServer } from 'http';
+import { randomBytes } from 'crypto';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -32,6 +33,8 @@ const wss = new WebSocketServer({ server });
 // Store rooms and clients
 const rooms = new Map();
 const clients = new Map();
+// Reverse mapping for efficient WebSocket to Client lookup
+const wsToClient = new WeakMap();
 
 class Room {
   constructor(id, hostId) {
@@ -99,6 +102,7 @@ wss.on('connection', (ws) => {
   const clientId = generateId();
   const client = new Client(ws, clientId);
   clients.set(clientId, client);
+  wsToClient.set(ws, client);
 
   console.log(`Client connected: ${clientId}`);
 
@@ -319,17 +323,23 @@ function broadcastToRoom(roomId, message, excludeId = null) {
 }
 
 function generateId() {
-  return Date.now().toString(36) + Math.random().toString(36).substr(2);
+  // Use crypto-secure random generation
+  const timestamp = Date.now().toString(36);
+  const random = randomBytes(8).toString('hex');
+  return timestamp + random;
 }
 
 function generateRoomId() {
-  return Math.random().toString(36).substr(2, 6).toUpperCase();
+  // Generate crypto-secure 6-character room code
+  const bytes = randomBytes(4);
+  const hex = bytes.toString('hex').toUpperCase();
+  return hex.slice(0, 6);
 }
 
 // Heartbeat to detect disconnected clients
 const heartbeatInterval = setInterval(() => {
   wss.clients.forEach((ws) => {
-    const client = Array.from(clients.values()).find(c => c.ws === ws);
+    const client = wsToClient.get(ws);
     if (client) {
       if (!client.isAlive) {
         ws.terminate();
