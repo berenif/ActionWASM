@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Demo Variables</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #0f0;
+        }
+        button {
+            background: #0f0;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        #result {
+            background: #000;
+            padding: 10px;
+            border: 1px solid #0f0;
+            margin-top: 20px;
+            min-height: 200px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Demo Variables Access</h1>
+    <button onclick="testDirectAccess()">Test Direct Access</button>
+    <button onclick="testIframeAccess()">Test IFrame Access</button>
+    <div id="result"></div>
+    <iframe id="testFrame" src="" width="100%" height="400" style="border: 1px solid #0f0; margin-top: 20px; display: none;"></iframe>
+
+    <script>
+        const result = document.getElementById('result');
+        
+        function log(msg, color = '#0f0') {
+            const line = document.createElement('div');
+            line.style.color = color;
+            line.textContent = msg;
+            result.appendChild(line);
+        }
+        
+        function testDirectAccess() {
+            result.innerHTML = '';
+            log('Testing direct access to window variables...');
+            
+            // Load demo.js directly
+            const script = document.createElement('script');
+            script.src = 'demo.js';
+            script.onload = () => {
+                log('demo.js loaded');
+                
+                // Check for variables
+                if (window.fpsCounter !== undefined) {
+                    log(`✓ fpsCounter: ${window.fpsCounter}`, '#0f0');
+                } else {
+                    log('✗ fpsCounter not found', '#f00');
+                }
+                
+                if (window.latencyCounter !== undefined) {
+                    log(`✓ latencyCounter: ${window.latencyCounter}`, '#0f0');
+                } else {
+                    log('✗ latencyCounter not found', '#f00');
+                }
+                
+                if (window.memoryCounter !== undefined) {
+                    log(`✓ memoryCounter: ${window.memoryCounter}`, '#0f0');
+                } else {
+                    log('✗ memoryCounter not found', '#f00');
+                }
+                
+                if (window.entitiesCounter !== undefined) {
+                    log(`✓ entitiesCounter: ${window.entitiesCounter}`, '#0f0');
+                } else {
+                    log('✗ entitiesCounter not found', '#f00');
+                }
+            };
+            document.head.appendChild(script);
+        }
+        
+        function testIframeAccess() {
+            result.innerHTML = '';
+            log('Loading demo.html in iframe...');
+            
+            const iframe = document.getElementById('testFrame');
+            iframe.style.display = 'block';
+            iframe.src = 'demo.html';
+            
+            iframe.onload = () => {
+                log('IFrame loaded, waiting 2 seconds for demo to initialize...');
+                
+                setTimeout(() => {
+                    try {
+                        const iframeWindow = iframe.contentWindow;
+                        
+                        log('Checking iframe window variables:');
+                        
+                        if (iframeWindow.fpsCounter !== undefined) {
+                            log(`✓ fpsCounter: ${iframeWindow.fpsCounter}`, '#0f0');
+                        } else {
+                            log('✗ fpsCounter not accessible', '#f00');
+                        }
+                        
+                        if (iframeWindow.latencyCounter !== undefined) {
+                            log(`✓ latencyCounter: ${iframeWindow.latencyCounter}`, '#0f0');
+                        } else {
+                            log('✗ latencyCounter not accessible', '#f00');
+                        }
+                        
+                        if (iframeWindow.memoryCounter !== undefined) {
+                            log(`✓ memoryCounter: ${iframeWindow.memoryCounter}`, '#0f0');
+                        } else {
+                            log('✗ memoryCounter not accessible', '#f00');
+                        }
+                        
+                        if (iframeWindow.entitiesCounter !== undefined) {
+                            log(`✓ entitiesCounter: ${iframeWindow.entitiesCounter}`, '#0f0');
+                        } else {
+                            log('✗ entitiesCounter not accessible', '#f00');
+                        }
+                        
+                        // Try monitoring for 5 seconds
+                        log('', '#0ff');
+                        log('Starting 5-second monitoring...', '#0ff');
+                        let count = 0;
+                        const interval = setInterval(() => {
+                            count++;
+                            if (count > 5) {
+                                clearInterval(interval);
+                                log('Monitoring complete!', '#0ff');
+                                return;
+                            }
+                            
+                            try {
+                                log(`[${count}s] FPS: ${iframeWindow.fpsCounter}, Latency: ${iframeWindow.latencyCounter}ms, Memory: ${iframeWindow.memoryCounter}MB, Entities: ${iframeWindow.entitiesCounter}`, '#0ff');
+                            } catch (e) {
+                                log(`[${count}s] Error: ${e.message}`, '#f00');
+                            }
+                        }, 1000);
+                        
+                    } catch (e) {
+                        log(`Error accessing iframe: ${e.message}`, '#f00');
+                    }
+                }, 2000);
+            };
+        }
+    </script>
+</body>
+</html>

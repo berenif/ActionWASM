@@ -7,6 +7,12 @@ let latencyCounter = 12;
 let memoryCounter = 48;
 let entitiesCounter = 127;
 
+// Expose performance counters to window for monitoring
+window.fpsCounter = fpsCounter;
+window.latencyCounter = latencyCounter;
+window.memoryCounter = memoryCounter;
+window.entitiesCounter = entitiesCounter;
+
 // WebRTC demo state
 let roomCode = null;
 let peers = [];
@@ -57,6 +63,7 @@ function startPerformanceMonitoring() {
             
             if (currentTime >= lastTime + 1000) {
                 fpsCounter = Math.round((frameCount * 1000) / (currentTime - lastTime));
+                window.fpsCounter = fpsCounter; // Update window property
                 const fpsElement = document.getElementById('fps-counter');
                 if (fpsElement) {
                     fpsElement.textContent = fpsCounter;
@@ -100,6 +107,11 @@ function updateMetrics() {
             latencyCounter = Math.floor(Math.random() * 20) + 10;
             memoryCounter = Math.floor(Math.random() * 30) + 40;
             entitiesCounter = Math.floor(Math.random() * 50) + 100;
+            
+            // Update window properties
+            window.latencyCounter = latencyCounter;
+            window.memoryCounter = memoryCounter;
+            window.entitiesCounter = entitiesCounter;
             
             const latencyElement = document.getElementById('latency-counter');
             const memoryElement = document.getElementById('memory-counter');
