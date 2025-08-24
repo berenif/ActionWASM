@@ -1,0 +1,22 @@
+{
+  "name": "wasm-game-client",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "build:wasm": "cd ../game && wasm-pack build --target web --out-dir ../client/src/wasm",
+    "serve": "vite preview --port 3000"
+  },
+  "dependencies": {
+    "simple-peer": "^9.11.1"
+  },
+  "devDependencies": {
+    "@types/simple-peer": "^9.11.8",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.10",
+    "vite-plugin-wasm": "^3.3.0",
+    "vite-plugin-top-level-await": "^1.4.0"
+  }
+}
