@@ -62,6 +62,11 @@ function initializeCanvas() {
     if (!canvas) return;
     
     const ctx = canvas.getContext('2d');
+    if (!ctx) {
+        console.error('Failed to get 2D context for canvas');
+        return;
+    }
+    
     canvas.width = canvas.offsetWidth;
     canvas.height = canvas.offsetHeight;
     
@@ -118,7 +123,9 @@ function demoWASMPerformance() {
         
         // Update canvas with results
         const canvas = document.getElementById('demo-canvas');
+        if (!canvas) return;
         const ctx = canvas.getContext('2d');
+        if (!ctx) return;
         
         ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -143,7 +150,9 @@ function demoMultiplayer() {
     showNotification('Testing P2P connection...');
     
     const canvas = document.getElementById('demo-canvas');
+    if (!canvas) return;
     const ctx = canvas.getContext('2d');
+    if (!ctx) return;
     
     // Simulate connection visualization
     ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
@@ -190,7 +199,9 @@ function demoRoguelike() {
     showNotification('Generating procedural dungeon...');
     
     const canvas = document.getElementById('demo-canvas');
+    if (!canvas) return;
     const ctx = canvas.getContext('2d');
+    if (!ctx) return;
     
     ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -226,7 +237,9 @@ function demoCombat() {
     showNotification('Demonstrating combat system...');
     
     const canvas = document.getElementById('demo-canvas');
+    if (!canvas) return;
     const ctx = canvas.getContext('2d');
+    if (!ctx) return;
     
     let frame = 0;
     const maxFrames = 60;
@@ -278,7 +291,9 @@ function demoEnemyAI() {
     showNotification('Spawning intelligent enemies...');
     
     const canvas = document.getElementById('demo-canvas');
+    if (!canvas) return;
     const ctx = canvas.getContext('2d');
+    if (!ctx) return;
     
     const enemies = [];
     for (let i = 0; i < 5; i++) {
@@ -335,7 +350,9 @@ function demoInventory() {
     showNotification('Opening inventory system...');
     
     const canvas = document.getElementById('demo-canvas');
+    if (!canvas) return;
     const ctx = canvas.getContext('2d');
+    if (!ctx) return;
     
     ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -408,7 +425,9 @@ function demoMobile() {
     showNotification('Touch controls activated!');
     
     const canvas = document.getElementById('demo-canvas');
+    if (!canvas) return;
     const ctx = canvas.getContext('2d');
+    if (!ctx) return;
     
     ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -473,7 +492,9 @@ function demoOffline() {
     }
     
     const canvas = document.getElementById('demo-canvas');
+    if (!canvas) return;
     const ctx = canvas.getContext('2d');
+    if (!ctx) return;
     
     ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -544,7 +565,9 @@ function launchPvP() {
 
 function simulateGameLaunch(mode, description) {
     const canvas = document.getElementById('demo-canvas');
+    if (!canvas) return;
     const ctx = canvas.getContext('2d');
+    if (!ctx) return;
     
     ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);

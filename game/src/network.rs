@@ -92,19 +92,38 @@ fn setup_networking(
     {
         // Connect to signaling server
         let ws_url = get_signaling_url();
-        if let Ok(ws) = WebSocket::new(&ws_url) {
-            ws.set_binary_type(BinaryType::Arraybuffer);
-            
-            // Set up WebSocket event handlers
-            let onopen = Closure::wrap(Box::new(move || {
-                web_sys::console::log_1(&"Connected to signaling server".into());
-            }) as Box<dyn FnMut()>);
-            
-            ws.set_onopen(Some(onopen.as_ref().unchecked_ref()));
-            onopen.forget();
-            
-            network_state.signaling_socket = Some(ws);
-            network_state.is_connected = true;
+        match WebSocket::new(&ws_url) {
+            Ok(ws) => {
+                ws.set_binary_type(BinaryType::Arraybuffer);
+                
+                // Set up WebSocket event handlers
+                let onopen = Closure::wrap(Box::new(move || {
+                    web_sys::console::log_1(&"Connected to signaling server".into());
+                }) as Box<dyn FnMut()>);
+                
+                let onerror = Closure::wrap(Box::new(move |e: web_sys::ErrorEvent| {
+                    web_sys::console::error_1(&format!("WebSocket error: {:?}", e.message()).into());
+                }) as Box<dyn FnMut(web_sys::ErrorEvent)>);
+                
+                let onclose = Closure::wrap(Box::new(move |e: web_sys::CloseEvent| {
+                    web_sys::console::log_1(&format!("WebSocket closed: code={}, reason={}", e.code(), e.reason()).into());
+                }) as Box<dyn FnMut(web_sys::CloseEvent)>);
+                
+                ws.set_onopen(Some(onopen.as_ref().unchecked_ref()));
+                ws.set_onerror(Some(onerror.as_ref().unchecked_ref()));
+                ws.set_onclose(Some(onclose.as_ref().unchecked_ref()));
+                
+                onopen.forget();
+                onerror.forget();
+                onclose.forget();
+                
+                network_state.signaling_socket = Some(ws);
+                network_state.is_connected = true;
+            }
+            Err(e) => {
+                web_sys::console::error_1(&format!("Failed to create WebSocket: {:?}", e).into());
+                network_state.is_connected = false;
+            }
         }
     }
 }
