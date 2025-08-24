@@ -59,11 +59,22 @@ function updateMetrics() {
 // Initialize canvas for visual demos
 function initializeCanvas() {
     const canvas = document.getElementById('demo-canvas');
-    if (!canvas) return;
+    if (!canvas) {
+        console.error('Canvas element not found during initialization!');
+        return;
+    }
     
     const ctx = canvas.getContext('2d');
-    canvas.width = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight;
+    if (!ctx) {
+        console.error('Could not get canvas 2D context!');
+        return;
+    }
+    
+    // Set canvas dimensions
+    canvas.width = canvas.offsetWidth || 800;
+    canvas.height = canvas.offsetHeight || 600;
+    
+    console.log(`Canvas initialized with dimensions: ${canvas.width}x${canvas.height}`);
     
     // Draw initial demo scene
     drawDemoScene(ctx);
@@ -134,8 +145,9 @@ function demoWASMPerformance() {
         ctx.fillText(`Operations/sec: ${Math.floor(Math.random() * 1000000 + 500000)}`, canvas.width / 2, 190);
         ctx.fillText(`Memory Usage: ${memoryCounter}MB`, canvas.width / 2, 230);
         
-        showNotification('Benchmark Complete! Near-native performance achieved.');
-    }, 1500);
+            showNotification('Benchmark Complete! Near-native performance achieved.');
+        }, 1500);
+    }, 100); // End of setTimeout for tab switch
 }
 
 // Multiplayer Connection Demo
@@ -180,53 +192,142 @@ function demoMultiplayer() {
         ctx.font = '14px Inter, sans-serif';
         ctx.textAlign = 'center';
         ctx.fillText(node.label, node.x, node.y + 40);
-    });
+        });
+        
+        showNotification('P2P Network Connected! Latency: 12ms');
+    }, 100); // End of setTimeout
+}
+
+// Helper function to switch to demo tab
+function switchToDemoTab() {
+    // Hide all tabs
+    const tabs = document.querySelectorAll('.tab-content');
+    tabs.forEach(tab => tab.classList.remove('active'));
     
-    showNotification('P2P Network Connected! Latency: 12ms');
+    // Remove active class from all buttons
+    const buttons = document.querySelectorAll('.tab-btn');
+    buttons.forEach(btn => btn.classList.remove('active'));
+    
+    // Show demo tab
+    const demoTab = document.getElementById('demo-tab');
+    if (demoTab) {
+        demoTab.classList.add('active');
+    }
+    
+    // Find and activate the demo button
+    buttons.forEach(btn => {
+        if (btn.textContent.includes('Live Demo')) {
+            btn.classList.add('active');
+        }
+    });
 }
 
 // Roguelike Room Generation Demo
 function demoRoguelike() {
-    showNotification('Generating procedural dungeon...');
-    
-    const canvas = document.getElementById('demo-canvas');
-    const ctx = canvas.getContext('2d');
-    
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
-    // Generate random room layout
-    const tileSize = 20;
-    const roomWidth = Math.floor(canvas.width / tileSize);
-    const roomHeight = Math.floor(canvas.height / tileSize);
-    
-    for (let x = 0; x < roomWidth; x++) {
-        for (let y = 0; y < roomHeight; y++) {
-            const isWall = x === 0 || x === roomWidth - 1 || y === 0 || y === roomHeight - 1 || Math.random() < 0.1;
+    try {
+        console.log('Starting roguelike demo...');
+        
+        // Switch to demo tab first
+        switchToDemoTab();
+        
+        // Small delay to ensure tab is visible
+        setTimeout(() => {
+            showNotification('Generating procedural dungeon...');
             
-            if (isWall) {
-                ctx.fillStyle = '#374151';
-            } else {
-                ctx.fillStyle = Math.random() < 0.05 ? '#f093fb' : '#1f2937';
+            const canvas = document.getElementById('demo-canvas');
+            if (!canvas) {
+                console.error('Canvas element not found!');
+                showNotification('Error: Canvas not found!');
+                return;
             }
-            
-            ctx.fillRect(x * tileSize, y * tileSize, tileSize - 1, tileSize - 1);
+        
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+            console.error('Could not get canvas context!');
+            showNotification('Error: Could not get canvas context!');
+            return;
         }
+        
+        // Ensure canvas has proper dimensions
+        if (canvas.width === 0 || canvas.height === 0) {
+            canvas.width = canvas.offsetWidth || 800;
+            canvas.height = canvas.offsetHeight || 600;
+        }
+        
+        console.log(`Canvas dimensions: ${canvas.width}x${canvas.height}`);
+        
+        // Clear the canvas
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Generate random room layout
+        const tileSize = 20;
+        const roomWidth = Math.floor(canvas.width / tileSize);
+        const roomHeight = Math.floor(canvas.height / tileSize);
+        
+        console.log(`Generating ${roomWidth}x${roomHeight} room...`);
+        
+        // Generate room tiles
+        for (let x = 0; x < roomWidth; x++) {
+            for (let y = 0; y < roomHeight; y++) {
+                const isWall = x === 0 || x === roomWidth - 1 || y === 0 || y === roomHeight - 1 || Math.random() < 0.1;
+                
+                if (isWall) {
+                    ctx.fillStyle = '#374151';
+                } else {
+                    ctx.fillStyle = Math.random() < 0.05 ? '#f093fb' : '#1f2937';
+                }
+                
+                ctx.fillRect(x * tileSize, y * tileSize, tileSize - 1, tileSize - 1);
+            }
+        }
+        
+        // Add player position
+        ctx.fillStyle = '#4ade80';
+        ctx.fillRect(canvas.width / 2 - 10, canvas.height / 2 - 10, 20, 20);
+        
+        // Add some enemies
+        ctx.fillStyle = '#ef4444';
+        for (let i = 0; i < 5; i++) {
+            const enemyX = Math.floor(Math.random() * (roomWidth - 2) + 1) * tileSize;
+            const enemyY = Math.floor(Math.random() * (roomHeight - 2) + 1) * tileSize;
+            ctx.fillRect(enemyX + 5, enemyY + 5, 10, 10);
+        }
+        
+        // Add some loot
+        ctx.fillStyle = '#fbbf24';
+        for (let i = 0; i < 3; i++) {
+            const lootX = Math.floor(Math.random() * (roomWidth - 2) + 1) * tileSize;
+            const lootY = Math.floor(Math.random() * (roomHeight - 2) + 1) * tileSize;
+            ctx.beginPath();
+            ctx.arc(lootX + 10, lootY + 10, 5, 0, Math.PI * 2);
+            ctx.fill();
+        }
+        
+            const seed = Math.floor(Math.random() * 999999);
+            showNotification('Room Generated! Seed: ' + seed);
+            console.log('Roguelike demo completed successfully!');
+        }, 100); // End of setTimeout
+    } catch (error) {
+        console.error('Error in demoRoguelike:', error);
+        showNotification('Error generating room: ' + error.message);
     }
-    
-    // Add player position
-    ctx.fillStyle = '#4ade80';
-    ctx.fillRect(canvas.width / 2 - 10, canvas.height / 2 - 10, 20, 20);
-    
-    showNotification('Room Generated! Seed: ' + Math.floor(Math.random() * 999999));
 }
 
 // Combat System Demo
 function demoCombat() {
-    showNotification('Demonstrating combat system...');
+    // Switch to demo tab first
+    switchToDemoTab();
     
-    const canvas = document.getElementById('demo-canvas');
-    const ctx = canvas.getContext('2d');
+    setTimeout(() => {
+        showNotification('Demonstrating combat system...');
+        
+        const canvas = document.getElementById('demo-canvas');
+        if (!canvas) {
+            console.error('Canvas not found!');
+            return;
+        }
+        const ctx = canvas.getContext('2d');
     
     let frame = 0;
     const maxFrames = 60;
@@ -268,9 +369,10 @@ function demoCombat() {
         } else {
             showNotification('Combat Demo Complete!');
         }
-    }
-    
-    animateCombat();
+        }
+        
+        animateCombat();
+    }, 100); // End of setTimeout
 }
 
 // Enemy AI Demo
@@ -325,17 +427,26 @@ function demoEnemyAI() {
         } else {
             showNotification('Enemy AI Demo Complete!');
         }
-    }
-    
-    animateEnemies();
+        }
+        
+        animateEnemies();
+    }, 100); // End of setTimeout
 }
 
 // Inventory Demo
 function demoInventory() {
-    showNotification('Opening inventory system...');
+    // Switch to demo tab first
+    switchToDemoTab();
     
-    const canvas = document.getElementById('demo-canvas');
-    const ctx = canvas.getContext('2d');
+    setTimeout(() => {
+        showNotification('Opening inventory system...');
+        
+        const canvas = document.getElementById('demo-canvas');
+        if (!canvas) {
+            console.error('Canvas not found!');
+            return;
+        }
+        const ctx = canvas.getContext('2d');
     
     ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -398,9 +509,10 @@ function demoInventory() {
                 ctx.fillText(item.icon, x + slotSize / 2, y + slotSize / 2 + 10);
             }
         }
-    }
-    
-    showNotification('Inventory loaded with ' + items.length + ' items!');
+        }
+        
+        showNotification('Inventory loaded with ' + items.length + ' items!');
+    }, 100); // End of setTimeout
 }
 
 // Mobile Touch Demo
