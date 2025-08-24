@@ -290,7 +290,10 @@ fn apply_damage(
     time: Res<Time>,
 ) {
     for (hitbox, attack_hitbox) in hitbox_query.iter() {
-        let attacker_stats = attacker_query.get(attack_hitbox.owner).unwrap();
+        // Safely get attacker stats, skip if attacker entity doesn't exist
+        let Ok(attacker_stats) = attacker_query.get(attack_hitbox.owner) else {
+            continue;
+        };
 
         for &hit_entity in hitbox.hit_entities.iter() {
             if let Ok((entity, mut health, transform, defender_stats, maybe_enemy)) = target_query.get_mut(hit_entity) {
